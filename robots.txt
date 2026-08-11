@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /
+
+# Note: robots.txt is only read from a domain's root. On Netlify or a custom
+# domain this file works. On a GitHub Pages *project* site
+# (username.github.io/reponame/) crawlers look at username.github.io/robots.txt
+# instead, so this copy is ignored there — the noindex <meta> tag in index.html
+# is what actually keeps the page out of search results.

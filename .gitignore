@@ -1,0 +1,10 @@
+# Internal setup notes — no secrets in them, but no reason to publish either.
+# Delete this line if you'd rather keep the doc with the code.
+SUPABASE_SETUP.md
+
+# OS / editor noise
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/

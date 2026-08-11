@@ -1,0 +1,2059 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Real people's names and notes live behind this page. Keep it out of search
+     results: the link should only work for people you hand it to. -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Personal Prospect List — MACHOMOD</title>
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-2: #fafbfc;
+    --border: #dfe3e8;
+    --border-strong: #c3c9d1;
+    --text: #1b2430;
+    --text-dim: #6b7683;
+    --text-faint: #98a1ac;
+    --navy: #1f3864;
+    --navy-soft: #2d4d86;
+    --gold: #d9a441;
+    --gold-soft: #f3e0b8;
+    --danger: #c0392b;
+    --shadow: 0 1px 2px rgba(16,24,40,.06), 0 8px 24px rgba(16,24,40,.08);
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171c;
+      --surface: #1c2027;
+      --surface-2: #21262e;
+      --border: #2e343d;
+      --border-strong: #414954;
+      --text: #e6e9ee;
+      --text-dim: #9aa4b1;
+      --text-faint: #6c7683;
+      --navy: #8fb0e8;
+      --navy-soft: #6f95d6;
+      --gold: #e0ad4f;
+      --gold-soft: #4a3a1c;
+      --danger: #e5776a;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  /* ---------- header ---------- */
+  header.page {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    border-bottom: 2px solid var(--border-strong);
+    padding-bottom: 14px; margin-bottom: 20px;
+  }
+  .title h1 {
+    margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -.2px;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+  .title .sub { color: var(--text-dim); font-size: 13px; margin-top: 3px; }
+  .stats { display: flex; gap: 22px; }
+  .stat .n { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .stat .l { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-faint); }
+
+  /* ---------- toolbar ---------- */
+  .toolbar {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    margin-bottom: 14px;
+  }
+  .toolbar .grow { flex: 1 1 220px; min-width: 180px; }
+
+  input[type=text], input[type=search], select, textarea {
+    font: inherit; color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px; padding: 8px 10px; width: 100%;
+  }
+  textarea { resize: vertical; min-height: 76px; }
+  input:focus, select:focus, textarea:focus {
+    outline: 2px solid var(--navy-soft); outline-offset: -1px; border-color: transparent;
+  }
+
+  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--border-strong);
+           background: var(--surface); color: var(--text); padding: 8px 14px; white-space: nowrap; }
+  button:hover { background: var(--surface-2); }
+  button.primary { background: var(--navy); border-color: var(--navy); color: #fff; font-weight: 600; }
+  @media (prefers-color-scheme: dark) { button.primary { color: #10131a; } }
+  button.primary:hover { filter: brightness(1.08); }
+  button.ghost { border-color: transparent; background: transparent; color: var(--text-dim); }
+  button.ghost:hover { background: var(--surface-2); color: var(--text); }
+  #btnResort { border-color: var(--gold); color: var(--gold); }
+  #btnResort:hover { background: var(--gold-soft); }
+  button.danger { color: var(--danger); border-color: transparent; background: transparent; }
+  button.danger:hover { background: color-mix(in srgb, var(--danger) 12%, transparent); }
+
+  /* ---------- table ---------- */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .tscroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 900px; }
+  thead th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .07em;
+    color: var(--text-dim); font-weight: 700;
+    padding: 11px 12px; background: var(--surface-2);
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover { background: var(--surface-2); }
+  .col-n { width: 40px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+  .col-name { font-weight: 600; }
+  .col-loc { color: var(--text-dim); white-space: nowrap; }
+  .col-chars { color: var(--text-dim); font-size: 13px; }
+  .score { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--text-dim);
+           font-size: 12px; padding-left: 8px; }
+  .score.hot { color: var(--gold); }
+  .unk { font-size: 12px; color: var(--text-faint); padding-left: 5px; font-variant-numeric: tabular-nums; }
+
+  /* ---------- MACHOMOD chips ---------- */
+  .chips { display: inline-flex; gap: 4px; }
+  .chip {
+    width: 26px; height: 26px; border-radius: 50%; padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; font-family: Georgia, serif;
+    background: transparent; color: var(--text-faint);
+    border: 1.5px dashed var(--border-strong);   /* default = unknown */
+    transition: background .12s, color .12s, border-color .12s, opacity .12s;
+  }
+  .chip:hover { border-color: var(--gold); color: var(--gold); background: transparent; }
+  .chip.yes {
+    border-style: solid; border-color: var(--gold);
+    background: var(--gold); color: #3a2a08; box-shadow: 0 0 0 2px var(--gold-soft);
+  }
+  .chip.no {
+    border-style: solid; border-color: var(--border-strong);
+    color: var(--text-faint); text-decoration: line-through; opacity: .55;
+  }
+  .chip.no:hover { opacity: 1; }
+
+  /* ---------- tags ---------- */
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; line-height: 1; font-weight: 500; white-space: nowrap;
+    padding: 4px 9px; border-radius: 999px;
+    border: 1px solid var(--border-strong); background: var(--surface-2);
+    color: var(--text-dim);
+  }
+  .tag .n { font-size: 10px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+  button.tag:hover { background: var(--surface); color: var(--text); border-color: var(--navy-soft); }
+  button.tag.on { background: var(--navy); border-color: var(--navy); color: #fff; font-weight: 600; }
+  button.tag.on .n { color: rgba(255,255,255,.7); }
+  @media (prefers-color-scheme: dark) {
+    button.tag.on { color: #10131a; }
+    button.tag.on .n { color: rgba(16,19,26,.65); }
+  }
+  .tag .rm { border: none; background: transparent; padding: 0 0 0 1px; margin: 0;
+             color: var(--text-faint); font-size: 13px; line-height: 1; border-radius: 0; }
+  .tag .rm:hover { color: var(--danger); background: transparent; }
+
+  /* ---------- cloud sync strip ---------- */
+  .cloudbar {
+    display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
+    font-size: 12px; color: var(--text-dim);
+    padding: 8px 12px; margin: -4px 0 14px;
+    border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+  }
+  .cloudbar.warn { border-color: var(--danger); }
+  .cloudbar.warn b { color: var(--danger); }
+  .cloudbar .spacer { flex: 1; }
+  .cloudbar button { padding: 4px 10px; font-size: 12px; }
+  .cdot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; background: var(--border-strong); }
+  .cdot.ok { background: #3ba55d; }
+  .cdot.bad { background: var(--danger); }
+  .cdot.saving { background: var(--gold); animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .3 } }
+
+  .tagbar {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    margin: -4px 0 14px;
+  }
+  .tagbar .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .07em;
+                 color: var(--text-faint); font-weight: 700; margin-right: 2px; }
+  .tagbar .note { font-size: 12px; color: var(--text-faint); }
+
+  .cell-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+
+  /* tag entry field in the edit form — looks like one input, holds pills + a text box */
+  .taginput {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    border: 1px solid var(--border-strong); border-radius: 8px;
+    padding: 6px 8px; background: var(--surface);
+  }
+  .taginput:focus-within { outline: 2px solid var(--navy-soft); outline-offset: -1px; border-color: transparent; }
+  .taginput input { border: none; background: transparent; padding: 2px; width: auto; flex: 1 1 140px; min-width: 120px; }
+  .taginput input:focus { outline: none; }
+
+  /* combobox: the tag field plus its drop-down of tags already in use */
+  .combo { position: relative; }
+  .combo .caret {
+    border: none; background: transparent; margin-left: auto; flex: 0 0 auto;
+    padding: 2px 5px; border-radius: 6px; color: var(--text-faint); font-size: 10px; line-height: 1;
+  }
+  .combo .caret:hover { color: var(--text); background: var(--surface-2); }
+  .combo .caret[aria-expanded="true"] { transform: rotate(180deg); }
+
+  .menu {
+    position: absolute; z-index: 5; left: 0; right: 0; top: calc(100% + 4px);
+    background: var(--surface); border: 1px solid var(--border-strong);
+    border-radius: 8px; box-shadow: var(--shadow);
+    max-height: 216px; overflow-y: auto; padding: 4px;
+  }
+  .menu .opt {
+    display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+    padding: 6px 8px; border: none; border-radius: 6px; background: transparent;
+    font-size: 13px; color: var(--text);
+  }
+  .menu .opt:hover { background: var(--surface-2); }
+  .menu .opt.on { background: var(--navy); color: #fff; }
+  @media (prefers-color-scheme: dark) { .menu .opt.on { color: #10131a; } }
+  .menu .opt.on .tag { background: transparent; border-color: currentColor; color: inherit; }
+  .menu .opt .n { margin-left: auto; font-size: 11px; color: var(--text-faint);
+                  font-variant-numeric: tabular-nums; }
+  .menu .opt.on .n { color: inherit; opacity: .7; }
+  .menu .opt .new { color: inherit; }
+  .menu .opt .new b { font-weight: 600; }
+  .menu .none { padding: 8px; color: var(--text-faint); font-size: 12px; font-style: italic; }
+
+  /* ---------- approach history ---------- */
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+         background: var(--border-strong); margin-right: 5px; vertical-align: 1px; }
+  .dot.good { background: var(--gold); }
+  .dot.bad { background: var(--danger); }
+
+  .col-appr { text-align: right; white-space: nowrap; }
+  .col-appr .when { display: block; font-size: 12px; color: var(--text-dim); font-weight: 600; }
+  .col-appr .meta { display: block; font-size: 11px; color: var(--text-faint); }
+
+  /* the one-line summary that stands in for the history inside the edit form */
+  .histsum {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2);
+  }
+  .histsum .hs-main { flex: 1 1 240px; min-width: 0; }
+  .histsum .hs-when { display: block; font-size: 13px; font-weight: 600; }
+  .histsum .hs-note { display: block; font-size: 12px; color: var(--text-dim);
+                      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .histsum .hs-count { font-size: 12px; color: var(--text-faint); white-space: nowrap; }
+
+  /* the "log a visit" composer */
+  .logger {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2);
+  }
+  .lrow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .lrow .grow { flex: 1 1 200px; }
+  .lrow input[type=date], .lrow select { width: auto; padding: 7px 9px; }
+  .lrow input[type=text] { padding: 7px 10px; }
+  .lrow .seg { margin-left: 0; background: var(--surface); }
+  .lrow .seg button.sel[data-out="good"] { background: var(--gold); color: #3a2a08; }
+  .lrow .seg button.sel[data-out="bad"] { background: var(--danger); color: #fff; }
+  .lrow button.primary { padding: 7px 13px; }
+
+  .timeline {
+    list-style: none; margin: 12px 0 0; padding: 2px 0 2px 18px;
+    border-left: 2px solid var(--border);
+    max-height: 220px; overflow-y: auto;
+  }
+  .timeline.tall { max-height: min(46vh, 420px); }
+  .tl-item { position: relative; padding: 7px 0; }
+  .tl-item::before {
+    content: ""; position: absolute; left: -24px; top: 12px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--border-strong); box-shadow: 0 0 0 3px var(--surface);
+  }
+  .tl-item.good::before { background: var(--gold); }
+  .tl-item.bad::before { background: var(--danger); }
+  .tl-head { display: flex; align-items: center; gap: 8px; }
+  .tl-when { font-size: 12px; font-weight: 700; color: var(--text-dim); }
+  .tl-kind {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint);
+    border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px; line-height: 1.4;
+  }
+  .tl-item.good .tl-kind { border-color: var(--gold); color: var(--gold); }
+  .tl-item.bad .tl-kind { border-color: var(--danger); color: var(--danger); }
+  .tl-head .rm { margin-left: auto; border: none; background: transparent; color: var(--text-faint);
+                 font-size: 16px; line-height: 1; padding: 0 4px; }
+  .tl-head .rm:hover { color: var(--danger); background: transparent; }
+  .tl-note { font-size: 13px; margin-top: 3px; white-space: pre-wrap; word-break: break-word; }
+  .tl-empty { color: var(--text-faint); font-style: italic; font-size: 13px; padding: 7px 0; }
+
+  /* ---------- pager ---------- */
+  .pager {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 10px 12px; border-top: 1px solid var(--border);
+    background: var(--surface-2); font-size: 13px; color: var(--text-dim);
+  }
+  .pager .spacer { flex: 1; }
+  .pager b { color: var(--text); font-variant-numeric: tabular-nums; }
+  .pager .pgs { display: inline-flex; gap: 4px; align-items: center; }
+  .pager button { padding: 4px 10px; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .pager button[disabled] { opacity: .4; cursor: default; }
+  .pager button[disabled]:hover { background: var(--surface); }
+  .pager button.pg.cur { background: var(--navy); border-color: var(--navy); color: #fff; font-weight: 700; }
+  @media (prefers-color-scheme: dark) { .pager button.pg.cur { color: #10131a; } }
+  .pager .gap { color: var(--text-faint); padding: 0 2px; }
+  .pager .psize { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .pager .psize select { width: auto; padding: 4px 8px; font-size: 13px; }
+
+  /* ---------- empty state ---------- */
+  .empty { padding: 56px 20px; text-align: center; color: var(--text-dim); }
+  .empty h3 { margin: 0 0 6px; color: var(--text); font-size: 16px; }
+  .empty p { margin: 0 0 18px; }
+
+  /* ---------- modal ---------- */
+  .backdrop {
+    position: fixed; inset: 0; background: rgba(12,16,22,.55);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px; overflow-y: auto; z-index: 50;
+    animation: fade .12s ease-out;
+  }
+  @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+  .modal {
+    background: var(--surface); border-radius: 14px; box-shadow: var(--shadow);
+    width: 100%; max-width: 640px; border: 1px solid var(--border);
+    margin: auto; animation: rise .14s ease-out;
+  }
+  .modal.wide { max-width: 920px; }
+  @keyframes rise { from { transform: translateY(8px); opacity: 0 } to { transform: none; opacity: 1 } }
+  .modal header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    padding: 18px 20px 14px; border-bottom: 1px solid var(--border);
+  }
+  .modal header h2 { margin: 0; font-size: 19px; font-family: Georgia, serif; }
+  .modal header .where { color: var(--text-dim); font-size: 13px; margin-top: 2px; }
+  .modal .body { padding: 16px 20px; }
+  .modal footer {
+    display: flex; gap: 8px; justify-content: flex-end; align-items: center;
+    padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface-2);
+    border-radius: 0 0 14px 14px;
+  }
+  .modal footer .spacer { flex: 1; }
+  .x { border: none; background: transparent; color: var(--text-faint); font-size: 22px; line-height: 1; padding: 2px 6px; }
+  .x:hover { color: var(--text); background: transparent; }
+
+  .field { margin-bottom: 13px; }
+  .field:last-child { margin-bottom: 0; }
+  /* characters | notes side by side in the wide edit form */
+  .editcols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+  @media (max-width: 780px) { .editcols { grid-template-columns: 1fr; } }
+  .field > label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .07em;
+                   color: var(--text-dim); font-weight: 700; margin-bottom: 5px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .row2 { grid-template-columns: 1fr; } }
+  .hint { color: var(--text-faint); font-size: 12px; margin-top: 4px; }
+  .err { color: var(--danger); font-size: 12px; margin-top: 4px; }
+
+  /* profile list in the edit modal — 2 columns x 4 rows so the form needs no scrolling */
+  .plist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 14px; }
+  @media (max-width: 780px) { .plist { grid-template-columns: 1fr; } }
+  .pitem {
+    display: flex; align-items: center; gap: 9px; width: 100%; text-align: left;
+    padding: 5px 8px; border-radius: 8px; border: 1px solid transparent;
+  }
+  .pitem:hover { background: var(--surface-2); border-color: var(--border); }
+  .pitem .pmeta { min-width: 0; flex: 1; }
+  .pitem .nm { font-weight: 600; font-size: 13px; color: var(--text-dim); }
+  .pitem .hn { display: block; font-size: 11px; color: var(--text-faint); line-height: 1.3;
+               white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pitem.yes .nm { color: var(--text); }
+  .pitem.no .nm { text-decoration: line-through; }
+
+  .seg { display: inline-flex; margin-left: auto; flex: 0 0 auto;
+         border: 1px solid var(--border-strong); border-radius: 7px; overflow: hidden; }
+  .seg button {
+    border: none; border-left: 1px solid var(--border); border-radius: 0;
+    padding: 3px 9px; font-size: 12px; font-weight: 600;
+    background: var(--surface); color: var(--text-faint);
+  }
+  .seg button:first-child { border-left: none; }
+  .seg button:hover { background: var(--surface-2); color: var(--text); }
+  .seg button.sel { background: var(--border-strong); color: var(--text); }
+  .seg button.sel[data-set="yes"] { background: var(--gold); color: #3a2a08; }
+
+  .none { color: var(--text-faint); font-style: italic; font-weight: 400; }
+
+  .legend { margin-top: 14px; color: var(--text-faint); font-size: 12px; }
+  .legend b { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page">
+    <div class="title">
+      <h1>Personal Prospect List</h1>
+      <div class="sub">邀约名单 · MACHOMOD — 8 profiles &amp; 3 good characters</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n" id="statTotal">0</div><div class="l">Prospects</div></div>
+      <div class="stat"><div class="n" id="statQual">0</div><div class="l">5+ profiles</div></div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="grow"><input type="search" id="search" placeholder="Search name, location, characters, notes…" autocomplete="off"></div>
+    <select id="sort" style="width:auto">
+      <option value="score">Sort: Score (high → low)</option>
+      <option value="name">Sort: Name (A → Z)</option>
+      <option value="approached">Sort: Follow up next (never / oldest)</option>
+      <option value="updated">Sort: Last updated</option>
+      <option value="added">Sort: Date added</option>
+    </select>
+    <button id="btnResort" hidden title="Your edits have put rows out of order. Click to re-apply the sort.">↕ Re-sort</button>
+    <button class="primary" id="btnAdd">+ Add prospect</button>
+    <button class="ghost" id="btnExport" title="Download all prospects as JSON">Export</button>
+    <button class="ghost" id="btnImport" title="Load prospects from a JSON file">Import</button>
+    <input type="file" id="fileInput" accept="application/json,.json" hidden>
+  </div>
+
+  <div class="cloudbar" id="cloudbar" hidden></div>
+  <div class="tagbar" id="tagbar" hidden></div>
+
+  <div class="card">
+    <div class="tscroll">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-n">#</th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>8 Profiles &nbsp;<span style="font-weight:400;text-transform:none;letter-spacing:0">(M A C H O M O D)</span></th>
+            <th>3 Good Characters &amp; Notes</th>
+            <th style="text-align:right">Last Approach</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="empty" id="empty" hidden>
+      <h3>No prospects yet</h3>
+      <p>Add your first prospect, or load a few sample rows to see how it works.</p>
+      <button class="primary" id="btnAdd2">+ Add prospect</button>
+      <button id="btnSample">Load sample rows</button>
+    </div>
+    <div class="pager" id="pager" hidden></div>
+  </div>
+
+  <div class="legend">
+    <b>MACHOMOD:</b>
+    <span id="legend"></span>
+    · Click any circle in a row to toggle it. Click the row itself to open the record and log a visit.
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+
+<script>
+"use strict";
+
+/* ------------------------------------------------------------------ *
+ * Model
+ * ------------------------------------------------------------------ */
+
+const PROFILES = [
+  // Hints are kept to one short line so the edit form fits without scrolling.
+  { key: "marriage",     letter: "M", label: "Marriage",     hint: "Married / committed relationship" },
+  { key: "age",          letter: "A", label: "Age",          hint: "Right life stage, roughly 25–55" },
+  { key: "children",     letter: "C", label: "Children",     hint: "Has kids to provide for" },
+  { key: "homeowner",    letter: "H", label: "Homeowner",    hint: "Owns a home, settled down" },
+  { key: "occupation",   letter: "O", label: "Occupation",   hint: "Steady, respectable job" },
+  { key: "motivated",    letter: "M", label: "Motivated",    hint: "Driven, wants more out of life" },
+  { key: "openminded",   letter: "O", label: "Openminded",   hint: "Willing to look at a new idea" },
+  { key: "dissatisfied", letter: "D", label: "Dissatisfied", hint: "Unhappy with job, income or time" },
+];
+
+/* ==================================================================
+ * SUPABASE — your project URL and its PUBLISHABLE key.
+ * Both are meant to be public: the publishable key can only do what the
+ * table's row-level security policies allow (see SUPABASE_SETUP.md).
+ * NEVER paste the SECRET key here — it bypasses those policies entirely.
+ * Leave `key` blank and the app runs exactly as before: local only.
+ * ================================================================== */
+const SUPABASE = {
+  url: "https://jnjitexmntqjbsixmzaf.supabase.co",   // no trailing slash
+  key: "sb_publishable_CETBwLJM4MaS4a1tfIr07g_3_fp3-yo",   // "Publishable key" (sb_publishable_…). Older projects call this the anon key.
+};
+const CLOUD = Boolean(SUPABASE.url && SUPABASE.key);
+
+const STORE_KEY = "machamod.prospects.v1";
+const PREF_KEY  = "machamod.prefs.v1";
+const AUTH_KEY  = "machamod.auth.v1";
+const DIRTY_KEY = "machamod.dirty.v1";
+
+const MAX_TAGS = 12;
+const TAG_MAXLEN = 24;
+const NOTE_MAXLEN = 600;
+
+/** How a prospect was approached — one entry per visit / call / meeting. */
+const APPROACH_KINDS = [
+  { key: "call",     label: "Call" },
+  { key: "text",     label: "Text" },
+  { key: "meet",     label: "Met up" },
+  { key: "present",  label: "Presented" },
+  { key: "followup", label: "Follow-up" },
+  { key: "other",    label: "Other" },
+];
+const KIND_LABEL = Object.fromEntries(APPROACH_KINDS.map(k => [k.key, k.label]));
+
+/** How it went. Neutral is the default — most visits are just a step along the way. */
+const OUTCOMES = [
+  { key: "good",    label: "Positive" },
+  { key: "neutral", label: "Neutral" },
+  { key: "bad",     label: "Negative" },
+];
+const OUTCOME_LABEL = Object.fromEntries(OUTCOMES.map(o => [o.key, o.label]));
+
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : "p" + Date.now() + Math.random().toString(16).slice(2));
+
+/** Each profile is tri-state. "unknown" is the default: not asked yet, which is
+ *  different from a confirmed "no" and should read as a to-do, not a strike. */
+const STATES = ["unknown", "yes", "no"];   // click-cycle order for the inline circles
+const SEG_ORDER = ["yes", "no", "unknown"]; // left-to-right order in the edit form
+
+function blankProfiles() {
+  const p = {};
+  for (const d of PROFILES) p[d.key] = "unknown";
+  return p;
+}
+
+/** Accepts the old boolean shape too: legacy `false` meant "never marked" → unknown. */
+function toState(v) {
+  if (v === "yes" || v === true) return "yes";
+  if (v === "no") return "no";
+  return "unknown";
+}
+
+/** Tags are free text, but kept tidy: trimmed, single-spaced, capped, and unique
+ *  case-insensitively so "Gym" and "gym" can never both sit on one prospect. */
+function cleanTags(raw) {
+  const out = [];
+  for (const t of Array.isArray(raw) ? raw : []) {
+    if (t == null) continue;
+    const s = String(t).replace(/\s+/g, " ").trim().slice(0, TAG_MAXLEN);
+    if (s && !out.some(x => x.toLowerCase() === s.toLowerCase())) out.push(s);
+    if (out.length >= MAX_TAGS) break;
+  }
+  return out;
+}
+
+/** Approach entries, newest first — the order everything downstream relies on,
+ *  so it is enforced here rather than trusted from storage or an import. */
+function cleanHistory(raw) {
+  const rows = [];
+  for (const h of Array.isArray(raw) ? raw : []) {
+    if (!h || typeof h !== "object") continue;
+    const when = new Date(h.at);
+    rows.push({
+      id: typeof h.id === "string" && h.id ? h.id : uid(),
+      at: isNaN(when) ? new Date().toISOString() : when.toISOString(),
+      kind: KIND_LABEL[h.kind] ? h.kind : "other",
+      outcome: OUTCOME_LABEL[h.outcome] ? h.outcome : "neutral",
+      note: String(h.note ?? "").trim().slice(0, NOTE_MAXLEN),
+    });
+  }
+  return rows.sort((a, b) => b.at.localeCompare(a.at));
+}
+
+function newProspect() {
+  return {
+    id: uid(),
+    name: "",
+    location: "",
+    profiles: blankProfiles(),
+    characters: ["", "", ""],
+    tags: [],
+    history: [],
+    notes: "",
+    createdAt: new Date().toISOString(),
+    lastUpdated: new Date().toISOString(),
+  };
+}
+
+/** Canonical ISO, whatever form the timestamp arrived in. Postgres hands back
+ *  `2026-06-01T00:00:00+00:00` where JS wrote `2026-06-01T00:00:00.000Z`; left
+ *  alone, the two spellings of the same instant would read as a change on every
+ *  poll and would sort against each other by punctuation. */
+function isoOr(v, fallback) {
+  if (!v) return fallback;
+  const d = new Date(v);
+  return isNaN(d) ? fallback : d.toISOString();
+}
+
+/** Fill in anything missing so hand-edited / imported records stay safe to render. */
+function normalize(raw) {
+  const p = newProspect();
+  return {
+    id: typeof raw.id === "string" && raw.id ? raw.id : p.id,
+    name: String(raw.name ?? ""),
+    location: String(raw.location ?? ""),
+    profiles: Object.fromEntries(PROFILES.map(d => [d.key, toState(raw.profiles && raw.profiles[d.key])])),
+    characters: [0, 1, 2].map(i => String((raw.characters && raw.characters[i]) ?? "")),
+    tags: cleanTags(raw.tags),
+    history: cleanHistory(raw.history),
+    notes: String(raw.notes ?? ""),
+    createdAt: isoOr(raw.createdAt, p.createdAt),
+    lastUpdated: isoOr(raw.lastUpdated || raw.createdAt, p.lastUpdated),
+  };
+}
+
+const countState = (pr, state) => PROFILES.reduce((n, d) => n + (pr.profiles[d.key] === state ? 1 : 0), 0);
+const score = pr => countState(pr, "yes");
+
+/* ------------------------------------------------------------------ *
+ * Storage
+ * ------------------------------------------------------------------ */
+
+let prospects = load();
+
+function load() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
+    return Array.isArray(raw) ? raw.map(normalize) : [];
+  } catch {
+    return [];
+  }
+}
+
+/** The browser copy. In cloud mode this is a cache and an offline fallback —
+ *  the server holds the truth — but it is still written first, every time, so
+ *  a failed request can never lose an edit you just made. */
+function saveCache() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(prospects));
+  } catch (e) {
+    alert("Could not save to this browser's storage: " + e.message);
+  }
+}
+
+/** Cache, then push. `changed` narrows the upload to the one record that moved;
+ *  without it every record goes up (import, samples, manual re-sync). */
+function save(changed) {
+  saveCache();
+  if (!CLOUD || !canEdit()) return;
+  if (changed) pushRows([changed]);
+  else syncAll();     // whole-list change: upload everything and prune what's gone
+}
+
+function touch(pr) { pr.lastUpdated = new Date().toISOString(); }
+
+/** View preferences (page size, sort) live apart from the data so an import
+ *  or an export never carries them around. */
+function loadPrefs() {
+  try {
+    const p = JSON.parse(localStorage.getItem(PREF_KEY) || "{}");
+    return (p && typeof p === "object") ? p : {};
+  } catch {
+    return {};
+  }
+}
+
+function savePrefs() {
+  try {
+    localStorage.setItem(PREF_KEY, JSON.stringify({ pageSize, sortBy }));
+  } catch { /* a full or blocked storage must not break the view */ }
+}
+
+/* ------------------------------------------------------------------ *
+ * Supabase sync
+ *
+ * Shape of the deal: everyone reads, only a signed-in user writes (enforced
+ * server-side by row-level security, not by hiding buttons). The browser cache
+ * is written before every request, so a network failure degrades to "your copy
+ * is ahead of the server" — flagged loudly — rather than to lost work.
+ * ------------------------------------------------------------------ */
+
+let session = loadSession();
+/** True once local edits exist that the server has not accepted. Survives a
+ *  reload, so a refresh can't quietly pull the server copy over them. */
+let dirty = CLOUD && localStorage.getItem(DIRTY_KEY) === "1";
+let syncMsg = "";
+let pollTimer = null;
+
+const signedIn = () => Boolean(session?.access_token);
+/** Local-only mode has no notion of permission — everything stays editable. */
+const canEdit = () => !CLOUD || signedIn();
+
+function loadSession() {
+  if (!CLOUD) return null;
+  try {
+    const s = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
+    return s && s.access_token ? s : null;
+  } catch {
+    return null;
+  }
+}
+
+function storeSession(s) {
+  session = s;
+  try {
+    if (s) localStorage.setItem(AUTH_KEY, JSON.stringify(s));
+    else localStorage.removeItem(AUTH_KEY);
+  } catch { /* a blocked storage just means signing in again next visit */ }
+}
+
+function setDirty(v) {
+  dirty = v;
+  try {
+    if (v) localStorage.setItem(DIRTY_KEY, "1");
+    else localStorage.removeItem(DIRTY_KEY);
+  } catch {}
+}
+
+/** One request. Uses the signed-in token when there is one, the anon key
+ *  otherwise — which is exactly the read-only identity other people get. */
+async function api(method, path, { body, headers = {} } = {}) {
+  // The signed-in token goes in Authorization; with no session we send none and
+  // let the key alone resolve the read-only role. (A publishable key is not a
+  // JWT, so passing it as a Bearer token is not something to rely on.)
+  const auth = session?.access_token ? { Authorization: "Bearer " + session.access_token } : {};
+  const res = await fetch(SUPABASE.url + path, {
+    method,
+    headers: {
+      apikey: SUPABASE.key,
+      ...auth,
+      "Content-Type": "application/json",
+      ...headers,
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  if (!res.ok) {
+    let detail = "";
+    try {
+      const j = await res.json();
+      detail = j.message || j.error_description || j.msg || j.hint || "";
+    } catch {}
+    throw new Error(`${res.status}${detail ? " — " + detail : " " + res.statusText}`);
+  }
+  return res.status === 204 ? null : res.json().catch(() => null);
+}
+
+/* ---------- auth (email + password, one owner) ---------- */
+
+async function signIn(email, password) {
+  const data = await fetch(`${SUPABASE.url}/auth/v1/token?grant_type=password`, {
+    method: "POST",
+    headers: { apikey: SUPABASE.key, "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  }).then(async res => {
+    const j = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(j.error_description || j.msg || j.message || `Sign-in failed (${res.status})`);
+    return j;
+  });
+  storeSession({
+    access_token: data.access_token,
+    refresh_token: data.refresh_token,
+    expires_at: Date.now() + (data.expires_in || 3600) * 1000,
+    email: data.user?.email || email,
+  });
+}
+
+function signOut() {
+  storeSession(null);
+  renderCloudBar();
+  render();                      // the table drops back to read-only
+}
+
+/** Access tokens last an hour; swap in a new one before it lapses. */
+async function ensureToken() {
+  if (!session) return;
+  if (Date.now() < session.expires_at - 60000) return;
+  try {
+    const res = await fetch(`${SUPABASE.url}/auth/v1/token?grant_type=refresh_token`, {
+      method: "POST",
+      headers: { apikey: SUPABASE.key, "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: session.refresh_token }),
+    });
+    const j = await res.json();
+    if (!res.ok) throw new Error(j.error_description || "session expired");
+    storeSession({
+      access_token: j.access_token,
+      refresh_token: j.refresh_token,
+      expires_at: Date.now() + (j.expires_in || 3600) * 1000,
+      email: j.user?.email || session.email,
+    });
+  } catch {
+    storeSession(null);          // refresh failed: sign in again
+    renderCloudBar();
+  }
+}
+
+/* ---------- row mapping ---------- */
+
+const toRow = pr => ({
+  id: pr.id,
+  name: pr.name,
+  location: pr.location,
+  profiles: pr.profiles,
+  characters: pr.characters,
+  tags: pr.tags,
+  history: pr.history,
+  notes: pr.notes,
+  created_at: pr.createdAt,
+  last_updated: pr.lastUpdated,
+});
+
+const fromRow = r => normalize({ ...r, createdAt: r.created_at, lastUpdated: r.last_updated });
+
+/* ---------- read / write ---------- */
+
+async function pullFromCloud({ initial = false } = {}) {
+  const rows = await api("GET", "/rest/v1/prospects?select=*");
+  if (!Array.isArray(rows)) return false;
+  const next = rows.map(fromRow);
+  if (JSON.stringify(next) === JSON.stringify(prospects)) return false;
+  prospects = next;
+  saveCache();
+  if (initial) reorder();        // first paint may sort freely
+  else markStale();              // later refreshes leave your rows where they are
+  render();
+  return true;
+}
+
+async function pushRows(rows) {
+  if (!rows.length) return;
+  setSync("saving");
+  try {
+    await ensureToken();
+    await api("POST", "/rest/v1/prospects", {
+      body: rows.map(toRow),
+      headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+    });
+    setDirty(false);
+    setSync("ok");
+  } catch (e) {
+    setDirty(true);
+    setSync("error", e.message);
+  }
+}
+
+async function removeRemote(id) {
+  if (!CLOUD || !canEdit()) return;
+  setSync("saving");
+  try {
+    await ensureToken();
+    await api("DELETE", `/rest/v1/prospects?id=eq.${encodeURIComponent(id)}`);
+    setSync("ok");
+  } catch (e) {
+    setDirty(true);
+    setSync("error", e.message);
+  }
+}
+
+/** Push everything and drop server rows this browser no longer has. The repair
+ *  path: used after an import and by the Sync now button. */
+async function syncAll() {
+  setSync("saving");
+  try {
+    await ensureToken();
+    const remote = await api("GET", "/rest/v1/prospects?select=id");
+    const mine = new Set(prospects.map(p => p.id));
+    const extra = (remote || []).map(r => r.id).filter(id => !mine.has(id));
+    if (prospects.length) {
+      await api("POST", "/rest/v1/prospects", {
+        body: prospects.map(toRow),
+        headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+      });
+    }
+    for (const id of extra) {
+      await api("DELETE", `/rest/v1/prospects?id=eq.${encodeURIComponent(id)}`);
+    }
+    setDirty(false);
+    setSync("ok");
+  } catch (e) {
+    setDirty(true);
+    setSync("error", e.message);
+  }
+}
+
+function setSync(state, msg = "") {
+  syncMsg = msg;
+  renderCloudBar(state);
+}
+
+/* ---------- the status strip ---------- */
+
+function renderCloudBar(state = dirty ? "error" : "ok") {
+  const bar = $("#cloudbar");
+  if (!CLOUD) { bar.hidden = true; return; }
+  bar.hidden = false;
+
+  const problem = state === "error" || dirty;
+  bar.className = "cloudbar" + (problem ? " warn" : "");
+  bar.innerHTML =
+    (state === "saving"
+      ? `<span class="cdot saving"></span><span>Saving…</span>`
+      : problem
+        ? `<span class="cdot bad"></span><span><b>Not synced.</b> Your changes are safe in this browser${
+            syncMsg ? ` — the server said: ${esc(syncMsg)}` : ""}</span>`
+        : signedIn()
+          ? `<span class="cdot ok"></span><span>Synced · signed in as ${esc(session.email || "you")}</span>`
+          : `<span class="cdot ok"></span><span>Shared list · read only</span>`) +
+    `<span class="spacer"></span>` +
+    (problem && canEdit() ? `<button id="btnSync">Sync now</button>` : "") +
+    (signedIn()
+      ? `<button class="ghost" id="btnSignOut">Sign out</button>`
+      : `<button id="btnSignIn">Sign in to edit</button>`);
+}
+
+/* ---------- sign-in dialog ---------- */
+
+function openSignIn() {
+  openModal(`
+    <header>
+      <div><h2>Sign in to edit</h2>
+        <div class="where">Everyone can read this list. Editing is yours alone.</div></div>
+      <button class="x" data-close aria-label="Close">&times;</button>
+    </header>
+    <div class="body">
+      <div class="field">
+        <label for="s-email">Email</label>
+        <input type="email" id="s-email" autocomplete="username" value="${esc(session?.email || "")}">
+      </div>
+      <div class="field">
+        <label for="s-pass">Password</label>
+        <input type="password" id="s-pass" autocomplete="current-password">
+        <div class="err" id="s-err" hidden></div>
+      </div>
+    </div>
+    <footer>
+      <div class="spacer"></div>
+      <button data-close>Cancel</button>
+      <button class="primary" data-go>Sign in</button>
+    </footer>
+  `, root => {
+    const email = root.querySelector("#s-email");
+    const pass = root.querySelector("#s-pass");
+    const err = root.querySelector("#s-err");
+    const btn = root.querySelector("[data-go]");
+    (email.value ? pass : email).focus();
+
+    const go = async () => {
+      err.hidden = true;
+      btn.disabled = true;
+      btn.textContent = "Signing in…";
+      try {
+        await signIn(email.value.trim(), pass.value);
+        closeModal();
+        renderCloudBar();
+        render();                    // editing controls come back
+        if (dirty) await syncAll();  // push anything made while signed out
+        else await pullFromCloud();
+      } catch (e) {
+        err.textContent = e.message;
+        err.hidden = false;
+        btn.disabled = false;
+        btn.textContent = "Sign in";
+      }
+    };
+
+    btn.addEventListener("click", go);
+    root.addEventListener("keydown", e => {
+      if (e.key === "Enter") { e.preventDefault(); go(); }
+    });
+  });
+}
+
+/* ---------- boot ---------- */
+
+async function initCloud() {
+  if (!CLOUD) { $("#cloudbar").hidden = true; return; }
+  renderCloudBar();
+
+  if (dirty) {
+    // local edits never made it up; do not let a refresh pull over them
+    setSync("error", "changes from a previous session are still local");
+  } else {
+    try {
+      await ensureToken();
+      await pullFromCloud({ initial: true });
+      setSync("ok");
+    } catch (e) {
+      setSync("error", e.message);
+    }
+  }
+
+  clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    if (document.hidden) return;            // don't poll a background tab
+    if (modalRoot.firstChild) return;       // nor pull data out from under an open form
+    if (dirty) return;                      // nor overwrite unsynced local work
+    try { await pullFromCloud(); } catch { /* transient; the next tick retries */ }
+  }, 15000);
+}
+
+/* ------------------------------------------------------------------ *
+ * Helpers
+ * ------------------------------------------------------------------ */
+
+const $ = sel => document.querySelector(sel);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function fmtDate(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return "—";
+  const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+  if (days === 0) return "Today";
+  if (days === 1) return "Yesterday";
+  if (days < 7) return days + " days ago";
+  return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+}
+
+function fmtDateFull(iso) {
+  const d = new Date(iso);
+  return isNaN(d) ? "—" : d.toLocaleString();
+}
+
+/** YYYY-MM-DD in the user's own timezone — what <input type="date"> expects. */
+function localDay(d = new Date()) {
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+}
+
+/** Turn a picked day back into a timestamp. Today keeps the current time so
+ *  several visits on one day stay in the order they were logged. */
+function isoFromDay(day) {
+  const now = new Date();
+  if (!day || day === localDay(now)) return now.toISOString();
+  const d = new Date(day + "T12:00:00");
+  return isNaN(d) ? now.toISOString() : d.toISOString();
+}
+
+const lastApproach = pr => pr.history[0] || null;
+
+const STATE_WORD = { yes: "Yes", no: "No", unknown: "Not asked yet" };
+
+/** Row of 8 circles. Each carries data-key so the table's click handler can cycle it. */
+function chipsHTML(pr) {
+  return `<span class="chips">` + PROFILES.map((d, i) => {
+    const st = pr.profiles[d.key];
+    return `<button type="button"
+        class="chip ${st}" data-chip data-key="${d.key}"
+        title="${i + 1}. ${esc(d.label)} — ${esc(d.hint)}&#10;Currently: ${STATE_WORD[st]} (click to change)"
+        aria-label="${esc(d.label)}: ${STATE_WORD[st]}">${d.letter}</button>`;
+  }).join("") + `</span>`;
+}
+
+/* ------------------------------------------------------------------ *
+ * List rendering
+ * ------------------------------------------------------------------ */
+
+const tbody = $("#tbody");
+const PAGE_SIZES = [10, 25, 50, 100, 0];   // 0 = show every row on one page
+const SORTS = ["score", "name", "approached", "updated", "added"];
+
+const prefs = loadPrefs();
+let query = "";
+let sortBy = SORTS.includes(prefs.sort) ? prefs.sort : "score";
+let pageSize = PAGE_SIZES.includes(prefs.pageSize) ? prefs.pageSize : 25;
+let page = 1;
+
+/** Lower-cased tag names the list is being narrowed to. A prospect must carry
+ *  every selected tag to show — selecting more always narrows, never widens. */
+let tagFilter = new Set();
+
+/* Rows are laid out by `orderIds`, a snapshot of the sort — NOT by re-sorting on
+ * every render. Editing a prospect changes its score, and re-sorting mid-edit
+ * would yank the row out from under the cursor. The snapshot is only recomputed
+ * on deliberate actions (sort change, add, import, explicit Re-sort). */
+let orderIds = [];
+let orderStale = false;
+
+function sortedIds() {
+  const byName = (a, b) => a.name.localeCompare(b.name);
+  return [...prospects].sort((a, b) => {
+    switch (sortBy) {
+      case "name":    return byName(a, b);
+      case "updated": return b.lastUpdated.localeCompare(a.lastUpdated);
+      case "added":   return b.createdAt.localeCompare(a.createdAt);
+      // never-approached first (empty string sorts before any date), then longest-neglected
+      case "approached": {
+        const av = lastApproach(a)?.at || "", bv = lastApproach(b)?.at || "";
+        return av.localeCompare(bv) || byName(a, b);
+      }
+      default:        return score(b) - score(a) || byName(a, b);
+    }
+  }).map(p => p.id);
+}
+
+/** Re-apply the sort and drop the "out of order" flag. */
+function reorder() {
+  orderIds = sortedIds();
+  orderStale = false;
+  $("#btnResort").hidden = true;
+}
+
+/** Keep the snapshot in sync with adds/deletes without disturbing existing rows. */
+function syncOrder() {
+  const live = new Set(prospects.map(p => p.id));
+  orderIds = orderIds.filter(id => live.has(id));
+  const known = new Set(orderIds);
+  for (const p of prospects) if (!known.has(p.id)) orderIds.push(p.id);
+}
+
+/** Flag (but don't act on) an order that no longer matches the chosen sort. */
+function markStale() {
+  syncOrder();                      // drop deleted ids first, or the compare below always differs
+  const want = sortedIds();
+  orderStale = orderIds.length !== want.length || orderIds.some((id, i) => id !== want[i]);
+  $("#btnResort").hidden = !orderStale;
+}
+
+function visibleProspects() {
+  syncOrder();
+  const pos = new Map(orderIds.map((id, i) => [id, i]));
+  const q = query.trim().toLowerCase();
+  return prospects
+    .filter(pr => {
+      if (tagFilter.size) {
+        const own = new Set(pr.tags.map(t => t.toLowerCase()));
+        for (const t of tagFilter) if (!own.has(t)) return false;
+      }
+      if (!q) return true;
+      const hay = [pr.name, pr.location, pr.notes, ...pr.characters, ...pr.tags,
+                   ...pr.history.map(h => h.note + " " + KIND_LABEL[h.kind])].join(" ").toLowerCase();
+      return hay.includes(q);
+    })
+    .sort((a, b) => pos.get(a.id) - pos.get(b.id));
+}
+
+/** Every tag in use, with how many prospects carry it. Keyed by the lower-cased
+ *  name; the label is whichever casing was seen first. */
+function tagIndex() {
+  const idx = new Map();
+  for (const pr of prospects) {
+    for (const t of pr.tags) {
+      const k = t.toLowerCase();
+      const hit = idx.get(k);
+      if (hit) hit.n++;
+      else idx.set(k, { label: t, n: 1 });
+    }
+  }
+  return idx;
+}
+
+/** The filter strip above the table. Also prunes selections for tags that no
+ *  longer exist anywhere — otherwise the list would filter down to nothing. */
+function renderTagBar() {
+  const idx = tagIndex();
+  for (const k of [...tagFilter]) if (!idx.has(k)) tagFilter.delete(k);
+
+  const bar = $("#tagbar");
+  if (idx.size === 0) { bar.hidden = true; bar.innerHTML = ""; return; }
+  bar.hidden = false;
+
+  const tags = [...idx.entries()].sort((a, b) => a[1].label.localeCompare(b[1].label));
+  bar.innerHTML =
+    `<span class="lbl">Tags</span>` +
+    tags.map(([k, t]) => {
+      const on = tagFilter.has(k);
+      return `<button type="button" class="tag ${on ? "on" : ""}" data-tag="${esc(k)}" aria-pressed="${on}"
+        title="${on ? "Remove" : "Add"} “${esc(t.label)}” ${on ? "from" : "to"} the filter">${esc(t.label)} <span class="n">${t.n}</span></button>`;
+    }).join("") +
+    (tagFilter.size
+      ? `<button class="ghost" id="btnClearTags" style="padding:3px 9px;font-size:12px">Clear</button>` +
+        (tagFilter.size > 1 ? `<span class="note">showing rows with all ${tagFilter.size} tags</span>` : "")
+      : "");
+}
+
+/** The profiles cell — shared by full renders and single-row refreshes so they can't drift. */
+function profileCellHTML(pr) {
+  const s = score(pr);
+  const unk = countState(pr, "unknown");
+  return chipsHTML(pr) +
+    `<span class="score ${s >= 5 ? "hot" : ""}">${s}/8</span>` +
+    (unk ? `<span class="unk" title="${unk} still unknown">${unk}?</span>` : "");
+}
+
+/** Last-approach cell: when, how it went, and how many visits in total. */
+function approachCellHTML(pr) {
+  const last = lastApproach(pr);
+  if (!last) return `<span class="none">Never approached</span>`;
+  const n = pr.history.length;
+  return `<span class="when"><span class="dot ${last.outcome}"></span>${esc(fmtDate(last.at))}</span>` +
+         `<span class="meta">${esc(KIND_LABEL[last.kind])}${n > 1 ? ` · ${n} visits` : ""}</span>`;
+}
+
+/** Record bookkeeping moved into this cell's tooltip when it took over the column. */
+function approachTitle(pr) {
+  const last = lastApproach(pr);
+  return (last ? `${KIND_LABEL[last.kind]} on ${fmtDateFull(last.at)} · ${OUTCOME_LABEL[last.outcome]}` : "No visits logged yet") +
+         `\nRecord updated ${fmtDateFull(pr.lastUpdated)}`;
+}
+
+function updateStats() {
+  $("#statTotal").textContent = prospects.length;
+  $("#statQual").textContent = prospects.filter(pr => score(pr) >= 5).length;
+}
+
+/** Repaint one row in place after a chip toggle: no reflow of the table, no lost scroll. */
+function refreshRow(pr, focusIdx) {
+  const tr = tbody.querySelector(`tr[data-id="${CSS.escape(pr.id)}"]`);
+  if (!tr) { render(); return; }
+  tr.querySelector(".col-prof").innerHTML = profileCellHTML(pr);
+  tr.querySelector(".col-appr").title = approachTitle(pr);   // the toggle bumped "updated"
+  if (focusIdx != null) tr.querySelectorAll("[data-chip]")[focusIdx]?.focus();
+  updateStats();
+  markStale();
+}
+
+const pageCount = total => (pageSize ? Math.max(1, Math.ceil(total / pageSize)) : 1);
+
+/** Which page a prospect currently falls on — so a freshly added row isn't
+ *  silently sorted onto a page you aren't looking at. Keeps the current page
+ *  when the row is filtered out entirely. */
+function pageOf(id) {
+  if (!pageSize) return 1;
+  const i = visibleProspects().findIndex(p => p.id === id);
+  return i < 0 ? page : Math.floor(i / pageSize) + 1;
+}
+
+/** Read-only tag pills for the table and the detail view. */
+function tagsHTML(pr) {
+  if (!pr.tags.length) return "";
+  return `<div class="cell-tags">` +
+    pr.tags.map(t => `<span class="tag">${esc(t)}</span>`).join("") + `</div>`;
+}
+
+/** What the empty box should say — no data at all reads very differently from
+ *  a filter that happens to match nothing. */
+function emptyText() {
+  if (!prospects.length) return ["No prospects yet", "Add your first prospect, or load a few sample rows to see how it works."];
+  const bits = [];
+  if (query.trim()) bits.push("“" + query.trim() + "”");
+  if (tagFilter.size) bits.push(tagFilter.size === 1 ? "that tag" : "all " + tagFilter.size + " tags");
+  return ["No matches", bits.length ? "No prospect matches " + bits.join(" and ") + "." : "No prospect matches the current filter."];
+}
+
+function render() {
+  renderTagBar();                   // may drop stale tag filters, so run it first
+  const list = visibleProspects();
+
+  const pages = pageCount(list.length);
+  page = Math.min(Math.max(1, page), pages);
+  const start = pageSize ? (page - 1) * pageSize : 0;
+  const rows = pageSize ? list.slice(start, start + pageSize) : list;
+
+  tbody.innerHTML = rows.map((pr, i) => {
+    const chars = pr.characters.filter(Boolean).join(", ");
+    const summary = [chars, pr.notes].filter(Boolean).join(" · ");
+    return `<tr data-id="${pr.id}" tabindex="0">
+      <td class="col-n">${start + i + 1}</td>
+      <td class="col-name">${esc(pr.name) || '<span class="none">Unnamed</span>'}${tagsHTML(pr)}</td>
+      <td class="col-loc">${esc(pr.location) || "—"}</td>
+      <td class="col-prof">${profileCellHTML(pr)}</td>
+      <td class="col-chars">${esc(summary) || "—"}</td>
+      <td class="col-appr" title="${esc(approachTitle(pr))}">${approachCellHTML(pr)}</td>
+    </tr>`;
+  }).join("");
+
+  const editable = canEdit();
+  $("#btnAdd").hidden = !editable;
+  $("#btnImport").hidden = !editable;
+
+  const emptyBox = $("#empty");
+  if (list.length === 0) {
+    const [head, body] = emptyText();
+    emptyBox.hidden = false;
+    emptyBox.querySelector("h3").textContent = head;
+    emptyBox.querySelector("p").textContent = body;
+    $("#btnSample").hidden = prospects.length > 0 || !editable;
+    $("#btnAdd2").hidden = prospects.length > 0 || !editable;
+  } else {
+    emptyBox.hidden = true;
+  }
+
+  renderPager(list.length, start, rows.length);
+  updateStats();
+}
+
+/** Page numbers with an ellipsis once the list is long: 1 … 6 7 8 … 42 */
+function pageNumbers(cur, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const out = [1];
+  const lo = Math.max(2, cur - 1), hi = Math.min(total - 1, cur + 1);
+  if (lo > 2) out.push("…");
+  for (let n = lo; n <= hi; n++) out.push(n);
+  if (hi < total - 1) out.push("…");
+  out.push(total);
+  return out;
+}
+
+function renderPager(total, start, shown) {
+  const box = $("#pager");
+  if (total === 0) { box.hidden = true; box.innerHTML = ""; return; }
+  box.hidden = false;
+
+  const pages = pageCount(total);
+  const filtered = total !== prospects.length;
+  box.innerHTML = `
+    <span>Showing <b>${start + 1}–${start + shown}</b> of <b>${total}</b>${filtered ? ` (of ${prospects.length} total)` : ""}</span>
+    <span class="spacer"></span>
+    ${pages > 1 ? `<span class="pgs">
+      <button data-page="prev" ${page === 1 ? "disabled" : ""} aria-label="Previous page">‹</button>
+      ${pageNumbers(page, pages).map(n => n === "…"
+        ? `<span class="gap">…</span>`
+        : `<button class="pg ${n === page ? "cur" : ""}" data-page="${n}"
+             ${n === page ? 'aria-current="page"' : ""} aria-label="Page ${n}">${n}</button>`).join("")}
+      <button data-page="next" ${page === pages ? "disabled" : ""} aria-label="Next page">›</button>
+    </span>` : ""}
+    <label class="psize">Per page
+      <select id="pageSize">
+        ${PAGE_SIZES.map(n => `<option value="${n}" ${n === pageSize ? "selected" : ""}>${n || "All"}</option>`).join("")}
+      </select>
+    </label>`;
+}
+
+tbody.addEventListener("click", e => {
+  const chip = e.target.closest("[data-chip]");
+  const tr = e.target.closest("tr[data-id]");
+  if (!tr) return;
+  const pr = prospects.find(p => p.id === tr.dataset.id);
+  if (!pr) return;
+
+  if (chip && canEdit()) {          // cycle one profile inline: unknown → yes → no
+    e.stopPropagation();
+    const k = chip.dataset.key;
+    const idx = [...chip.parentNode.children].indexOf(chip);
+    pr.profiles[k] = STATES[(STATES.indexOf(pr.profiles[k]) + 1) % STATES.length];
+    touch(pr);
+    save(pr);
+    refreshRow(pr, idx);            // in place — the row must not move while you click
+  } else {                          // the row itself opens the record for editing
+    openEdit(pr.id);
+  }
+});
+
+tbody.addEventListener("keydown", e => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const tr = e.target.closest("tr[data-id]");
+  if (!tr || e.target.closest("[data-chip]")) return;
+  e.preventDefault();
+  openEdit(tr.dataset.id);
+});
+
+/* ------------------------------------------------------------------ *
+ * Modal — a stack, so the visit log can open over the edit form and
+ * hand focus back to it untouched when it closes.
+ * ------------------------------------------------------------------ */
+
+const modalRoot = $("#modalRoot");
+const focusStack = [];
+
+/** Layers below the top one are inert: no tabbing into the form underneath. */
+function setTopLayer() {
+  const top = modalRoot.lastElementChild;
+  for (const layer of modalRoot.children) {
+    const buried = layer !== top;
+    layer.inert = buried;
+    if (buried) layer.setAttribute("aria-hidden", "true");
+    else layer.removeAttribute("aria-hidden");
+  }
+}
+
+function closeModal() {
+  const top = modalRoot.lastElementChild;
+  if (!top) return;
+  const done = top.onCloseHook;
+  top.remove();
+  setTopLayer();
+  if (!modalRoot.firstChild) document.body.style.overflow = "";
+  const back = focusStack.pop();
+  if (back && document.contains(back)) back.focus();
+  done?.();                          // may move focus again, so it runs last
+}
+
+function openModal(html, onMount, { wide = false, onClose } = {}) {
+  focusStack.push(document.activeElement);
+  document.body.style.overflow = "hidden";
+
+  const layer = document.createElement("div");
+  layer.className = "backdrop";
+  layer.onCloseHook = onClose;
+  layer.innerHTML = `<div class="modal ${wide ? "wide" : ""}" role="dialog" aria-modal="true">${html}</div>`;
+  modalRoot.appendChild(layer);
+  setTopLayer();
+
+  layer.addEventListener("mousedown", e => { if (e.target === layer) closeModal(); });
+  layer.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeModal));
+  if (onMount) onMount(layer.querySelector(".modal"));
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && modalRoot.firstChild) closeModal();   // pops one layer
+});
+
+/** Strip a dialog down to a viewer's version of itself. Belt to the RLS
+ *  policies' braces: the server rejects writes from a reader regardless, this
+ *  just stops the UI from offering what it can't deliver. */
+function applyReadOnly(root) {
+  root.querySelectorAll("input, textarea, select").forEach(el => { el.disabled = true; });
+  root.querySelectorAll("[data-save], [data-delete], .seg, .caret, .rm, .logger").forEach(el => el.remove());
+  const hist = root.querySelector("[data-history]");
+  if (hist) hist.textContent = "View visits";
+  for (const b of root.querySelectorAll("footer [data-close]")) b.textContent = "Close";
+}
+
+/* ---------- visit log — its own layer over the edit form ---------- */
+
+/** Logs visits against `draft`. For a prospect that already exists (`live`),
+ *  every change is written straight through to storage — a visit you just made
+ *  should not be lost by hitting Cancel on the form underneath. A brand-new
+ *  prospect has nothing to write to yet, so its visits ride along on the draft
+ *  until the prospect itself is added. */
+function openHistory(draft, { live, onChange, onClose }) {
+  openModal(`
+    <header>
+      <div>
+        <h2>Approach history</h2>
+        <div class="where">${esc(draft.name) || "Unnamed prospect"}</div>
+      </div>
+      <button class="x" data-close aria-label="Close">&times;</button>
+    </header>
+    <div class="body">
+      <div class="logger">
+        <div class="lrow">
+          <input type="date" id="h-date" value="${localDay()}" aria-label="Date of the visit">
+          <select id="h-kind" aria-label="How you approached">
+            ${APPROACH_KINDS.map(k => `<option value="${k.key}">${k.label}</option>`).join("")}
+          </select>
+          <span class="seg" id="h-outcome" role="group" aria-label="How it went">
+            ${OUTCOMES.map(o => `<button type="button" data-out="${o.key}"
+                class="${o.key === "neutral" ? "sel" : ""}" aria-pressed="${o.key === "neutral"}">${o.label}</button>`).join("")}
+          </span>
+        </div>
+        <div class="lrow">
+          <input type="text" class="grow" id="h-note" maxlength="${NOTE_MAXLEN}" autocomplete="off"
+                 placeholder="What happened? What's the next step?">
+          <button type="button" class="primary" id="h-add">+ Log visit</button>
+        </div>
+      </div>
+      <ol class="timeline tall" id="h-list"></ol>
+    </div>
+    <footer>
+      <span class="hint" style="margin:0">${live
+        ? "Saved as you log them."
+        : "Saved when you add the prospect."}</span>
+      <div class="spacer"></div>
+      <button class="primary" data-close>Done</button>
+    </footer>
+  `, root => {
+    const logDate = root.querySelector("#h-date");
+    const logKind = root.querySelector("#h-kind");
+    const logNote = root.querySelector("#h-note");
+    const logList = root.querySelector("#h-list");
+    let logOutcome = "neutral";
+
+    const drawLog = () => {
+      logList.innerHTML = draft.history.length
+        ? draft.history.map(h => `
+          <li class="tl-item ${h.outcome}" data-h="${h.id}">
+            <div class="tl-head">
+              <span class="tl-when" title="${esc(fmtDateFull(h.at))} · ${esc(OUTCOME_LABEL[h.outcome])}">${esc(fmtDate(h.at))}</span>
+              <span class="tl-kind">${esc(KIND_LABEL[h.kind])}</span>
+              <button type="button" class="rm" data-del="${h.id}"
+                      title="Remove this entry" aria-label="Remove entry from ${esc(fmtDate(h.at))}">&times;</button>
+            </div>
+            ${h.note ? `<div class="tl-note">${esc(h.note)}</div>` : ""}
+          </li>`).join("")
+        : `<li class="tl-empty">No visits logged yet — record the first one above.</li>`;
+    };
+
+    /** Re-sort, write through when there's a record to write to, and tell the
+     *  form underneath to refresh its summary. */
+    const persist = () => {
+      draft.history.sort((a, b) => b.at.localeCompare(a.at));
+      if (live) {
+        const rec = prospects.find(p => p.id === draft.id);
+        if (rec) {
+          rec.history = JSON.parse(JSON.stringify(draft.history));
+          touch(rec);
+          draft.lastUpdated = rec.lastUpdated;   // keep the open draft from reverting it on save
+          save(rec);
+          markStale();                           // "follow up next" order may have moved
+          render();
+        }
+      }
+      drawLog();
+      onChange?.();
+    };
+
+    const logVisit = () => {
+      draft.history.push({
+        id: uid(),
+        at: isoFromDay(logDate.value),
+        kind: logKind.value,
+        outcome: logOutcome,
+        note: logNote.value.trim().slice(0, NOTE_MAXLEN),
+      });
+      logNote.value = "";
+      logDate.value = localDay();
+      persist();
+      logList.scrollTop = 0;
+      logNote.focus();
+    };
+
+    root.querySelector("#h-outcome").addEventListener("click", e => {
+      const btn = e.target.closest("[data-out]");
+      if (!btn) return;
+      logOutcome = btn.dataset.out;
+      btn.parentNode.querySelectorAll("[data-out]").forEach(b => {
+        const sel = b.dataset.out === logOutcome;
+        b.classList.toggle("sel", sel);
+        b.setAttribute("aria-pressed", String(sel));
+      });
+    });
+
+    root.querySelector("#h-add").addEventListener("click", logVisit);
+
+    logList.addEventListener("click", e => {
+      const btn = e.target.closest("[data-del]");
+      if (!btn) return;
+      draft.history = draft.history.filter(h => h.id !== btn.dataset.del);
+      persist();
+    });
+
+    // Enter anywhere in the composer logs the visit rather than closing the dialog.
+    root.querySelector(".logger").addEventListener("keydown", e => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      logVisit();
+    });
+
+    drawLog();
+    if (canEdit()) logNote.focus();
+    else applyReadOnly(root);
+  }, { onClose });
+}
+
+/* ---------- add / edit form ---------- */
+
+function openEdit(id) {
+  const isNew = !id;
+  const original = isNew ? null : prospects.find(p => p.id === id);
+  if (!isNew && !original) return;
+  // Work on a copy so Cancel truly cancels.
+  const draft = isNew ? newProspect() : JSON.parse(JSON.stringify(original));
+
+  openModal(`
+    <header>
+      <div>
+        <h2>${isNew ? "Add prospect" : esc(draft.name) || "Unnamed prospect"}</h2>
+        ${isNew ? "" : `<div class="where">Added ${esc(fmtDate(draft.createdAt))} ·
+          updated ${esc(fmtDate(draft.lastUpdated))} ·
+          <b>${draft.history.length}</b> ${draft.history.length === 1 ? "visit" : "visits"} logged</div>`}
+      </div>
+      <button class="x" data-close aria-label="Close">&times;</button>
+    </header>
+    <div class="body">
+      <div class="row2">
+        <div class="field">
+          <label for="f-name">Name</label>
+          <input type="text" id="f-name" value="${esc(draft.name)}" placeholder="John Marshall" autocomplete="off">
+          <div class="err" id="err-name" hidden>Name is required.</div>
+        </div>
+        <div class="field">
+          <label for="f-loc">Location</label>
+          <input type="text" id="f-loc" value="${esc(draft.location)}" placeholder="Chicago" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="f-tag" id="lbl-tag">Tags</label>
+        <div class="combo">
+          <div class="taginput" id="tagbox">
+            <span id="tagPills" style="display:contents"></span>
+            <input type="text" id="f-tag" maxlength="${TAG_MAXLEN}" autocomplete="off"
+                   placeholder="Pick or type a tag…"
+                   role="combobox" aria-controls="tagMenu" aria-expanded="false"
+                   aria-autocomplete="list" aria-haspopup="listbox">
+            <button type="button" class="caret" id="tagCaret" tabindex="-1"
+                    aria-expanded="false" aria-label="Show existing tags" title="Show existing tags">▼</button>
+          </div>
+          <div class="menu" id="tagMenu" role="listbox" aria-labelledby="lbl-tag" hidden></div>
+        </div>
+        <div class="hint">Pick from tags you already use, or type a new one · Enter adds · up to ${MAX_TAGS}</div>
+      </div>
+
+      <div class="field">
+        <label>8 Profiles — MACHOMOD</label>
+        <div class="plist">
+          ${PROFILES.map((d, i) => {
+            const st = draft.profiles[d.key];
+            return `<div class="pitem ${st}" data-p="${d.key}" role="group" aria-label="${esc(d.label)}">
+              <span class="chip ${st}" aria-hidden="true">${d.letter}</span>
+              <span class="pmeta" title="${esc(d.hint)}">
+                <span class="nm">${i + 1}. ${esc(d.label)}</span>
+                <span class="hn">${esc(d.hint)}</span>
+              </span>
+              <span class="seg">
+                ${SEG_ORDER.map(s => `<button type="button" data-set="${s}" class="${st === s ? "sel" : ""}"
+                    title="${STATE_WORD[s]}" aria-pressed="${st === s}">${s === "unknown" ? "?" : STATE_WORD[s]}</button>`).join("")}
+              </span>
+            </div>`;
+          }).join("")}
+        </div>
+        <div class="hint" style="margin-top:5px"><b>?</b> = haven't found out yet. Leave it there until you know.</div>
+      </div>
+
+      <div class="field">
+        <label>Approach history</label>
+        <div class="histsum" id="histSum"></div>
+      </div>
+
+      <div class="editcols">
+        <div class="field">
+          <label>3 Good Characters</label>
+          ${[0, 1, 2].map(i => `<input type="text" style="margin-bottom:6px" data-char="${i}"
+              value="${esc(draft.characters[i])}" placeholder="${["hard working", "ambitious", "friendly"][i]}" autocomplete="off">`).join("")}
+        </div>
+
+        <div class="field">
+          <label for="f-notes">Notes</label>
+          <textarea id="f-notes" style="min-height:106px" placeholder="Needs more income, best reached after 7pm…">${esc(draft.notes)}</textarea>
+        </div>
+      </div>
+    </div>
+    <footer>
+      ${isNew ? "" : `<button class="danger" data-delete>Delete prospect</button>`}
+      <div class="spacer"></div>
+      <button data-close>Cancel</button>
+      <button class="primary" data-save>${isNew ? "Add prospect" : "Save changes"}</button>
+    </footer>
+  `, root => {
+    root.querySelector("#f-name").focus();
+
+    root.querySelectorAll("[data-p]").forEach(row => {
+      const key = row.dataset.p;
+      row.querySelectorAll("[data-set]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const st = btn.dataset.set;
+          draft.profiles[key] = st;
+          row.className = "pitem " + st;
+          row.querySelector(".chip").className = "chip " + st;
+          row.querySelectorAll("[data-set]").forEach(b => {
+            const sel = b.dataset.set === st;
+            b.classList.toggle("sel", sel);
+            b.setAttribute("aria-pressed", String(sel));
+          });
+        });
+      });
+    });
+
+    /* ---- tags: a combobox — free text plus a drop-down of tags already in use ---- */
+    const tagInput = root.querySelector("#f-tag");
+    const pills = root.querySelector("#tagPills");
+    const menu = root.querySelector("#tagMenu");
+    const caret = root.querySelector("#tagCaret");
+
+    let options = [];        // what the open menu is currently showing
+    let active = -1;         // highlighted option, -1 = none
+
+    const atLimit = () => draft.tags.length >= MAX_TAGS;
+
+    const drawPills = () => {
+      pills.innerHTML = draft.tags.map((t, i) =>
+        `<span class="tag">${esc(t)}<button type="button" class="rm" data-rm="${i}"
+           title="Remove ${esc(t)}" aria-label="Remove tag ${esc(t)}">&times;</button></span>`).join("");
+      tagInput.placeholder = atLimit() ? "Tag limit reached" : "Pick or type a tag…";
+      tagInput.disabled = atLimit();
+      caret.disabled = atLimit();
+      if (atLimit()) closeMenu();
+      else if (!menu.hidden) drawMenu();          // the picked tag must leave the list
+    };
+
+    /** Takes what's typed (possibly comma separated) and folds it into the draft. */
+    const addTags = text => {
+      draft.tags = cleanTags([...draft.tags, ...String(text).split(",")]);
+      tagInput.value = "";
+      active = -1;
+      drawPills();
+    };
+
+    /** Tags in use, minus the ones already on this prospect, narrowed by what's
+     *  typed — plus a "create" row when the typed text is genuinely new. */
+    function buildOptions() {
+      const typed = tagInput.value.trim().toLowerCase();
+      const own = new Set(draft.tags.map(t => t.toLowerCase()));
+      const idx = tagIndex();
+      const list = [...idx.entries()]
+        .filter(([k]) => !own.has(k) && (!typed || k.includes(typed)))
+        .sort((a, b) => a[1].label.localeCompare(b[1].label))
+        .map(([, t]) => ({ value: t.label, n: t.n }));
+      if (typed && !idx.has(typed) && !own.has(typed)) {
+        list.unshift({ value: tagInput.value.trim(), create: true });
+      }
+      return list;
+    }
+
+    function drawMenu() {
+      options = buildOptions();
+      if (active >= options.length) active = options.length - 1;
+      menu.innerHTML = options.length
+        ? options.map((o, i) => `<button type="button" class="opt ${i === active ? "on" : ""}" role="option"
+             id="tagopt-${i}" data-i="${i}" aria-selected="${i === active}">${
+            o.create
+              ? `<span class="new">Create <b>${esc(o.value)}</b></span>`
+              : `<span class="tag">${esc(o.value)}</span><span class="n">${o.n} ${o.n === 1 ? "prospect" : "prospects"}</span>`
+          }</button>`).join("")
+        : `<div class="none">${tagIndex().size ? "Every matching tag is already added" : "No tags yet — type to create your first"}</div>`;
+      if (active >= 0 && options[active]) {
+        tagInput.setAttribute("aria-activedescendant", "tagopt-" + active);
+        menu.querySelector(".opt.on")?.scrollIntoView({ block: "nearest" });
+      } else {
+        tagInput.removeAttribute("aria-activedescendant");
+      }
+    }
+
+    function openMenu() {
+      if (atLimit()) return;
+      menu.hidden = false;
+      tagInput.setAttribute("aria-expanded", "true");
+      caret.setAttribute("aria-expanded", "true");
+      drawMenu();
+    }
+
+    function closeMenu() {
+      menu.hidden = true;
+      active = -1;
+      tagInput.setAttribute("aria-expanded", "false");
+      caret.setAttribute("aria-expanded", "false");
+      tagInput.removeAttribute("aria-activedescendant");
+    }
+
+    /** Highlight the next/previous option, wrapping around. */
+    function move(step) {
+      if (menu.hidden) {
+        openMenu();
+        if (options.length) { active = step > 0 ? 0 : options.length - 1; drawMenu(); }
+        return;
+      }
+      if (!options.length) return;
+      active = (active + step + options.length) % options.length;
+      drawMenu();
+    }
+
+    function choose(i) {
+      const o = options[i];
+      if (!o) return;
+      addTags(o.value);
+      tagInput.focus();
+      if (!atLimit()) { openMenu(); }        // stay open so several tags can be picked in a row
+    }
+
+    pills.addEventListener("click", e => {
+      const btn = e.target.closest("[data-rm]");
+      if (!btn) return;
+      draft.tags.splice(Number(btn.dataset.rm), 1);
+      drawPills();
+      tagInput.focus();
+    });
+
+    // mousedown default is suppressed so clicking the menu never blurs the input
+    menu.addEventListener("mousedown", e => e.preventDefault());
+    menu.addEventListener("click", e => {
+      const opt = e.target.closest("[data-i]");
+      if (opt) choose(Number(opt.dataset.i));
+    });
+
+    caret.addEventListener("mousedown", e => e.preventDefault());
+    caret.addEventListener("click", () => {
+      if (menu.hidden) openMenu(); else closeMenu();
+      tagInput.focus();
+    });
+
+    tagInput.addEventListener("keydown", e => {
+      switch (e.key) {
+        case "ArrowDown": e.preventDefault(); e.stopPropagation(); move(1); break;
+        case "ArrowUp":   e.preventDefault(); e.stopPropagation(); move(-1); break;
+        case "Escape":
+          if (menu.hidden) return;           // no menu open → let Esc close the modal
+          e.preventDefault(); e.stopPropagation();
+          closeMenu();
+          break;
+        case "Tab":
+          closeMenu();
+          break;
+        case "Enter":
+        case ",":
+          if (active >= 0 && !menu.hidden) { e.preventDefault(); e.stopPropagation(); choose(active); break; }
+          if (!tagInput.value.trim()) return; // empty Enter falls through and saves the form
+          e.preventDefault();
+          e.stopPropagation();               // ...otherwise the form-level Enter would save
+          addTags(tagInput.value);
+          openMenu();
+          break;
+        case "Backspace":
+          if (tagInput.value || !draft.tags.length) return;
+          draft.tags.pop();
+          drawPills();
+          break;
+      }
+    });
+
+    tagInput.addEventListener("input", () => {
+      if (tagInput.value.includes(",")) { addTags(tagInput.value); }   // pasted "a, b, c"
+      active = -1;
+      openMenu();                            // typing always re-opens with the narrowed list
+    });
+    tagInput.addEventListener("click", () => { if (menu.hidden) openMenu(); });
+
+    root.querySelector("#tagbox").addEventListener("click", e => {
+      if (e.target.id === "tagbox") tagInput.focus();
+    });
+    // Leaving the field entirely (Tab, or a click elsewhere) puts the menu away.
+    root.querySelector(".combo").addEventListener("focusout", e => {
+      if (!e.relatedTarget || !root.querySelector(".combo").contains(e.relatedTarget)) closeMenu();
+    });
+
+    drawPills();
+
+    /* ---- approach history: one line here, the full log in its own dialog ---- */
+    const sum = root.querySelector("#histSum");
+
+    const drawSummary = () => {
+      const last = lastApproach(draft);
+      const n = draft.history.length;
+      sum.innerHTML = `
+        <span class="hs-main">${last
+          ? `<span class="hs-when"><span class="dot ${last.outcome}"></span>${esc(fmtDate(last.at))} · ${esc(KIND_LABEL[last.kind])}</span>
+             <span class="hs-note">${esc(last.note) || "<span class='none'>No note</span>"}</span>`
+          : `<span class="none">No visits logged yet</span>`}</span>
+        ${n ? `<span class="hs-count">${n} ${n === 1 ? "visit" : "visits"}</span>` : ""}
+        <button type="button" class="primary" data-history>${n ? "Log a visit" : "Log first visit"}</button>`;
+    };
+
+    sum.addEventListener("click", e => {
+      if (!e.target.closest("[data-history]")) return;
+      // the name typed so far should show in the log's header, even before saving
+      draft.name = root.querySelector("#f-name").value.trim() || draft.name;
+      openHistory(draft, {
+        live: !isNew,
+        onChange: drawSummary,
+        // drawSummary replaced the button focus was taken from, so re-find it
+        onClose: () => sum.querySelector("[data-history]")?.focus(),
+      });
+    });
+
+    drawSummary();
+
+    const commit = () => {
+      if (tagInput.value.trim()) addTags(tagInput.value);   // don't lose a half-typed tag
+      const name = root.querySelector("#f-name").value.trim();
+      const errBox = root.querySelector("#err-name");
+      if (!name) {
+        errBox.hidden = false;
+        root.querySelector("#f-name").focus();
+        return;
+      }
+      errBox.hidden = true;
+
+      draft.name = name;
+      draft.location = root.querySelector("#f-loc").value.trim();
+      draft.notes = root.querySelector("#f-notes").value.trim();
+      draft.characters = [...root.querySelectorAll("[data-char]")].map(i => i.value.trim());
+      touch(draft);
+
+      if (isNew) {
+        prospects.push(draft);
+        reorder();                  // a brand-new row should land where the sort says
+      } else {
+        prospects[prospects.findIndex(p => p.id === draft.id)] = draft;
+        markStale();                // an edited row stays put; offer Re-sort instead
+      }
+      save(draft);
+      closeModal();
+      if (isNew) page = pageOf(draft.id);
+      render();
+    };
+
+    root.querySelector("[data-save]").addEventListener("click", commit);
+    root.querySelector("[data-delete]")?.addEventListener("click", () => {
+      if (!confirm(`Delete ${draft.name || "this prospect"}? This cannot be undone.`)) return;
+      prospects = prospects.filter(p => p.id !== draft.id);
+      saveCache();
+      removeRemote(draft.id);
+      closeModal();
+      markStale();
+      render();
+    });
+    root.addEventListener("keydown", e => {
+      if (e.key === "Enter" && e.target.tagName === "INPUT") { e.preventDefault(); commit(); }
+    });
+
+    if (!canEdit()) applyReadOnly(root);   // last: it strips controls the wiring above added
+  }, { wide: true });
+}
+
+/* ------------------------------------------------------------------ *
+ * Import / export
+ * ------------------------------------------------------------------ */
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(prospects, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "prospect-list-" + new Date().toISOString().slice(0, 10) + ".json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importJSON(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    let incoming;
+    try {
+      incoming = JSON.parse(reader.result);
+      if (!Array.isArray(incoming)) throw new Error("expected a JSON array of prospects");
+    } catch (e) {
+      alert("Could not read that file: " + e.message);
+      return;
+    }
+    const rows = incoming.map(normalize);
+    const replace = prospects.length > 0 &&
+      confirm(`Import ${rows.length} prospect(s).\n\nOK = replace your current ${prospects.length}\nCancel = merge into the list`);
+    prospects = replace ? rows : prospects.concat(rows.filter(r => !prospects.some(p => p.id === r.id)));
+    save();
+    page = 1;
+    reorder();
+    render();
+  };
+  reader.readAsText(file);
+}
+
+/* ------------------------------------------------------------------ *
+ * Sample data (the four rows from the printed form)
+ * ------------------------------------------------------------------ */
+
+const SAMPLES = [
+  ["John Marshall", "Chicago",    [1,2,3,4,5],         ["Need more income","Ambitious","Hard working, friendly"], "", ["warm lead","referral"],
+    [[2, "call", "neutral", "Caught him at lunch. Open to hearing more."],
+     [0, "meet", "good", "Coffee downtown — asked good questions about the plan."]]],
+  ["Kelly Gibson",  "Naperville", [1,2,3,5],           ["Dissatisfied with job","Eager to learn","Detail oriented, high standard"], "", ["warm lead","coworker"],
+    [[9, "text", "neutral", "Said this month is busy, try again after the 15th."]]],
+  ["Benson Chen",   "California", [2,4,6,8],           ["Wants more time with family","Talkative, open minded","Hard working"], "Wants flexibility.", ["long distance"],
+    []],
+  ["Billy Hanson",  "Schaumburg", [1,2,3,5,7],         ["Extra income, business minded","Money driven","Thinks big, loves to help people"], "", ["referral","gym"],
+    [[21, "present", "good", "Showed the full plan. Wants to bring his wife next time."],
+     [14, "followup", "bad", "Went quiet — no answer on two calls."]]],
+];
+
+function loadSamples() {
+  for (const [name, location, nums, characters, notes, tags, log] of SAMPLES) {
+    const pr = newProspect();
+    pr.name = name;
+    pr.location = location;
+    pr.characters = [characters[0] || "", characters[1] || "", characters[2] || ""];
+    pr.notes = notes;
+    pr.tags = cleanTags(tags);
+    pr.history = cleanHistory(log.map(([daysAgo, kind, outcome, note]) => ({
+      at: new Date(Date.now() - daysAgo * 86400000).toISOString(), kind, outcome, note,
+    })));
+    for (const n of nums) pr.profiles[PROFILES[n - 1].key] = "yes";
+    prospects.push(pr);
+  }
+  save();
+  page = 1;
+  reorder();
+  render();
+}
+
+/* ------------------------------------------------------------------ *
+ * Wiring
+ * ------------------------------------------------------------------ */
+
+$("#btnAdd").addEventListener("click", () => openEdit(null));
+$("#btnAdd2").addEventListener("click", () => openEdit(null));
+$("#btnSample").addEventListener("click", loadSamples);
+$("#btnExport").addEventListener("click", exportJSON);
+$("#btnImport").addEventListener("click", () => $("#fileInput").click());
+$("#fileInput").addEventListener("change", e => {
+  if (e.target.files[0]) importJSON(e.target.files[0]);
+  e.target.value = "";
+});
+// Filtering only ever narrows, so a page deep in the old list would look empty.
+$("#search").addEventListener("input", e => { query = e.target.value; page = 1; render(); });
+$("#sort").addEventListener("change", e => { sortBy = e.target.value; page = 1; savePrefs(); reorder(); render(); });
+$("#btnResort").addEventListener("click", () => { page = 1; reorder(); render(); });
+
+$("#tagbar").addEventListener("click", e => {
+  if (e.target.closest("#btnClearTags")) { tagFilter.clear(); page = 1; render(); return; }
+  const btn = e.target.closest("[data-tag]");
+  if (!btn) return;
+  const k = btn.dataset.tag;
+  if (tagFilter.has(k)) tagFilter.delete(k); else tagFilter.add(k);
+  page = 1;
+  render();
+});
+
+$("#pager").addEventListener("click", e => {
+  const btn = e.target.closest("[data-page]");
+  if (!btn || btn.disabled) return;
+  const pages = pageCount(visibleProspects().length);
+  const to = btn.dataset.page;
+  page = to === "prev" ? page - 1 : to === "next" ? page + 1 : Number(to);
+  page = Math.min(Math.max(1, page), pages);
+  render();
+  $(".card").scrollIntoView({ block: "start", behavior: "smooth" });
+  // the pager was just rebuilt — put focus back so it can be paged from the keyboard
+  const again = $(`#pager [data-page="${to}"]`);
+  (again && !again.disabled ? again : $("#pager .pg.cur"))?.focus({ preventScroll: true });
+});
+
+$("#pager").addEventListener("change", e => {
+  if (e.target.id !== "pageSize") return;
+  const first = (page - 1) * pageSize;      // keep the row you were looking at in view
+  pageSize = Number(e.target.value);
+  page = pageSize ? Math.floor(first / pageSize) + 1 : 1;
+  savePrefs();
+  render();
+});
+
+$("#cloudbar").addEventListener("click", e => {
+  if (e.target.closest("#btnSignIn")) openSignIn();
+  else if (e.target.closest("#btnSignOut")) signOut();
+  else if (e.target.closest("#btnSync")) syncAll();
+});
+
+// A tab left open for hours has a stale list; catch up when it comes back.
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && CLOUD && !dirty && !modalRoot.firstChild) {
+    pullFromCloud().catch(() => {});
+  }
+});
+
+$("#sort").value = sortBy;
+
+$("#legend").innerHTML = PROFILES
+  .map(d => `<b>${d.letter}</b>&nbsp;${esc(d.label)}`)
+  .join(" &nbsp;·&nbsp; ");
+
+reorder();
+render();          // paint the cached copy immediately…
+initCloud();       // …then reconcile with the server
+
+</script>
+</body>
+</html>
