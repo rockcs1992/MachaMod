@@ -330,9 +330,20 @@
   }
   .tl-item.good .tl-kind { border-color: var(--gold); color: var(--gold); }
   .tl-item.bad .tl-kind { border-color: var(--danger); color: var(--danger); }
-  .tl-head .rm { margin-left: auto; border: none; background: transparent; color: var(--text-faint);
+  .tl-actions { margin-left: auto; display: flex; align-items: center; gap: 2px; flex: 0 0 auto; }
+  .tl-head .rm { border: none; background: transparent; color: var(--text-faint);
                  font-size: 16px; line-height: 1; padding: 0 4px; }
   .tl-head .rm:hover { color: var(--danger); background: transparent; }
+  .tl-act {
+    border: none; background: transparent; color: var(--text-faint);
+    font-size: 11px; line-height: 1; padding: 3px 6px; border-radius: 6px;
+  }
+  .tl-act:hover { color: var(--navy); background: var(--surface-2); }
+  .tl-item.editing { background: var(--gold-soft); border-radius: 8px;
+                     box-shadow: 0 0 0 6px var(--gold-soft); }
+  .tl-item.editing::before { background: var(--gold); }
+
+  .lnote { font-size: 12px; font-weight: 600; color: var(--gold); }
   .tl-note { font-size: 13px; margin-top: 3px; white-space: pre-wrap; word-break: break-word; }
   .tl-empty { color: var(--text-faint); font-style: italic; font-size: 13px; padding: 7px 0; }
 
@@ -1535,7 +1546,7 @@ document.addEventListener("keydown", e => {
  *  just stops the UI from offering what it can't deliver. */
 function applyReadOnly(root) {
   root.querySelectorAll("input, textarea, select").forEach(el => { el.disabled = true; });
-  root.querySelectorAll("[data-save], [data-delete], .seg, .caret, .rm, .logger").forEach(el => el.remove());
+  root.querySelectorAll("[data-save], [data-delete], .seg, .caret, .rm, .tl-act, .logger").forEach(el => el.remove());
   const hist = root.querySelector("[data-history]");
   if (hist) hist.textContent = "View visits";
   for (const b of root.querySelectorAll("footer [data-close]")) b.textContent = "Close";
@@ -1559,6 +1570,7 @@ function openHistory(draft, { live, onChange, onClose }) {
     </header>
     <div class="body">
       <div class="logger">
+        <div class="lnote" id="h-editing" hidden></div>
         <div class="lrow">
           <input type="date" id="h-date" value="${localDay()}" aria-label="Date of the visit">
           <select id="h-kind" aria-label="How you approached">
@@ -1572,6 +1584,7 @@ function openHistory(draft, { live, onChange, onClose }) {
         <div class="lrow">
           <input type="text" class="grow" id="h-note" maxlength="${NOTE_MAXLEN}" autocomplete="off"
                  placeholder="What happened? What's the next step?">
+          <button type="button" id="h-cancel" hidden>Cancel</button>
           <button type="button" class="primary" id="h-add">+ Log visit</button>
         </div>
       </div>
@@ -1589,21 +1602,73 @@ function openHistory(draft, { live, onChange, onClose }) {
     const logKind = root.querySelector("#h-kind");
     const logNote = root.querySelector("#h-note");
     const logList = root.querySelector("#h-list");
+    const addBtn = root.querySelector("#h-add");
+    const cancelBtn = root.querySelector("#h-cancel");
+    const editNote = root.querySelector("#h-editing");
     let logOutcome = "neutral";
+    /** id of the entry the composer is currently editing; null means "new visit". */
+    let editingId = null;
 
     const drawLog = () => {
       logList.innerHTML = draft.history.length
         ? draft.history.map(h => `
-          <li class="tl-item ${h.outcome}" data-h="${h.id}">
+          <li class="tl-item ${h.outcome} ${h.id === editingId ? "editing" : ""}" data-h="${h.id}">
             <div class="tl-head">
               <span class="tl-when" title="${esc(fmtDateFull(h.at))} · ${esc(OUTCOME_LABEL[h.outcome])}">${esc(fmtDate(h.at))}</span>
               <span class="tl-kind">${esc(KIND_LABEL[h.kind])}</span>
-              <button type="button" class="rm" data-del="${h.id}"
-                      title="Remove this entry" aria-label="Remove entry from ${esc(fmtDate(h.at))}">&times;</button>
+              <span class="tl-actions">
+                <button type="button" class="tl-act" data-edit="${h.id}"
+                        title="Edit this entry" aria-label="Edit entry from ${esc(fmtDate(h.at))}">Edit</button>
+                <button type="button" class="rm" data-del="${h.id}"
+                        title="Remove this entry" aria-label="Remove entry from ${esc(fmtDate(h.at))}">&times;</button>
+              </span>
             </div>
             ${h.note ? `<div class="tl-note">${esc(h.note)}</div>` : ""}
           </li>`).join("")
         : `<li class="tl-empty">No visits logged yet — record the first one above.</li>`;
+    };
+
+    /** Point the outcome segment at a value without going through a click. */
+    const setOutcome = value => {
+      logOutcome = value;
+      root.querySelectorAll("[data-out]").forEach(b => {
+        const sel = b.dataset.out === value;
+        b.classList.toggle("sel", sel);
+        b.setAttribute("aria-pressed", String(sel));
+      });
+    };
+
+    /** Composer chrome follows `editingId`: same fields, different verb. */
+    const drawComposer = () => {
+      const entry = editingId && draft.history.find(h => h.id === editingId);
+      addBtn.textContent = entry ? "Save changes" : "+ Log visit";
+      cancelBtn.hidden = !entry;
+      editNote.hidden = !entry;
+      if (entry) editNote.textContent = `Editing the visit from ${fmtDate(entry.at)}`;
+    };
+
+    const resetComposer = () => {
+      editingId = null;
+      logNote.value = "";
+      logDate.value = localDay();
+      logKind.value = APPROACH_KINDS[0].key;
+      setOutcome("neutral");
+      drawComposer();
+    };
+
+    /** Load an existing entry into the composer. */
+    const startEdit = id => {
+      const entry = draft.history.find(h => h.id === id);
+      if (!entry) return;
+      editingId = id;
+      logDate.value = localDay(new Date(entry.at));
+      logKind.value = entry.kind;
+      logNote.value = entry.note;
+      setOutcome(entry.outcome);
+      drawComposer();
+      drawLog();                       // highlight the row being edited
+      logNote.focus();
+      logNote.select();
     };
 
     /** Re-sort, write through when there's a record to write to, and tell the
@@ -1625,16 +1690,23 @@ function openHistory(draft, { live, onChange, onClose }) {
       onChange?.();
     };
 
+    /** Save the composer: onto the entry being edited, or as a new visit. */
     const logVisit = () => {
-      draft.history.push({
-        id: uid(),
-        at: isoFromDay(logDate.value),
+      const fields = {
         kind: logKind.value,
         outcome: logOutcome,
         note: logNote.value.trim().slice(0, NOTE_MAXLEN),
-      });
-      logNote.value = "";
-      logDate.value = localDay();
+      };
+      const entry = editingId && draft.history.find(h => h.id === editingId);
+      if (entry) {
+        // Leave the timestamp alone unless the day itself changed, so re-saving
+        // an entry doesn't shuffle it past other visits made the same day.
+        const sameDay = logDate.value === localDay(new Date(entry.at));
+        Object.assign(entry, fields, { at: sameDay ? entry.at : isoFromDay(logDate.value) });
+      } else {
+        draft.history.push({ id: uid(), at: isoFromDay(logDate.value), ...fields });
+      }
+      resetComposer();
       persist();
       logList.scrollTop = 0;
       logNote.focus();
@@ -1642,31 +1714,38 @@ function openHistory(draft, { live, onChange, onClose }) {
 
     root.querySelector("#h-outcome").addEventListener("click", e => {
       const btn = e.target.closest("[data-out]");
-      if (!btn) return;
-      logOutcome = btn.dataset.out;
-      btn.parentNode.querySelectorAll("[data-out]").forEach(b => {
-        const sel = b.dataset.out === logOutcome;
-        b.classList.toggle("sel", sel);
-        b.setAttribute("aria-pressed", String(sel));
-      });
+      if (btn) setOutcome(btn.dataset.out);
     });
 
-    root.querySelector("#h-add").addEventListener("click", logVisit);
+    addBtn.addEventListener("click", logVisit);
+    cancelBtn.addEventListener("click", () => { resetComposer(); drawLog(); logNote.focus(); });
 
     logList.addEventListener("click", e => {
-      const btn = e.target.closest("[data-del]");
-      if (!btn) return;
-      draft.history = draft.history.filter(h => h.id !== btn.dataset.del);
+      const edit = e.target.closest("[data-edit]");
+      if (edit) { startEdit(edit.dataset.edit); return; }
+
+      const del = e.target.closest("[data-del]");
+      if (!del) return;
+      if (del.dataset.del === editingId) resetComposer();   // don't edit what no longer exists
+      draft.history = draft.history.filter(h => h.id !== del.dataset.del);
       persist();
     });
 
-    // Enter anywhere in the composer logs the visit rather than closing the dialog.
+    // Enter anywhere in the composer saves it rather than closing the dialog.
     root.querySelector(".logger").addEventListener("keydown", e => {
+      if (e.key === "Escape" && editingId) {      // back out of an edit, keep the dialog
+        e.preventDefault();
+        e.stopPropagation();
+        resetComposer();
+        drawLog();
+        return;
+      }
       if (e.key !== "Enter") return;
       e.preventDefault();
       logVisit();
     });
 
+    drawComposer();
     drawLog();
     if (canEdit()) logNote.focus();
     else applyReadOnly(root);
