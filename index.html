@@ -47,6 +47,11 @@
   }
 
   * { box-sizing: border-box; }
+  /* The browser's own `[hidden] { display: none }` loses to any author rule that
+     sets display — and several blocks below are flex/grid *and* toggled through
+     the hidden attribute (.gate, .cloudbar, .tagbar, .pager). Without this they
+     stay on screen no matter what the JS sets. */
+  [hidden] { display: none !important; }
   html, body { margin: 0; padding: 0; }
   body {
     background: var(--bg);
