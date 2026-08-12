@@ -170,6 +170,19 @@
              color: var(--text-faint); font-size: 13px; line-height: 1; border-radius: 0; }
   .tag .rm:hover { color: var(--danger); background: transparent; }
 
+  /* ---------- sign-in gate ---------- */
+  .gate { display: flex; justify-content: center; padding: 48px 0 0; }
+  .gatecard {
+    width: 100%; max-width: 380px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow); padding: 26px 24px;
+  }
+  .gatecard h1 { margin: 0; font-size: 21px; font-family: Georgia, "Times New Roman", serif; }
+  .gatecard .sub { color: var(--text-dim); font-size: 13px; margin: 6px 0 20px; }
+  .gatecard .field { margin-bottom: 13px; }
+  .gatecard button.primary { width: 100%; margin-top: 6px; padding: 10px; }
+  .gatecard .err { margin: 0 0 10px; }
+
   /* ---------- cloud sync strip ---------- */
   .cloudbar {
     display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
@@ -403,6 +416,27 @@
 <body>
 <div class="wrap">
 
+  <!-- Shown instead of the whole app until someone signs in. Nothing about the
+       list — not even how many rows there are — renders behind this. -->
+  <div class="gate" id="gate" hidden>
+    <div class="gatecard">
+      <h1>Personal Prospect List</h1>
+      <p class="sub">This list is private. Sign in with the credentials you were given.</p>
+      <div class="field">
+        <label for="g-email">Email</label>
+        <input type="email" id="g-email" autocomplete="username" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label for="g-pass">Password</label>
+        <input type="password" id="g-pass" autocomplete="current-password">
+      </div>
+      <div class="err" id="g-err" hidden></div>
+      <button class="primary" id="g-go">Sign in</button>
+    </div>
+  </div>
+
+  <div id="app">
+
   <header class="page">
     <div class="title">
       <h1>Personal Prospect List</h1>
@@ -463,6 +497,8 @@
     <span id="legend"></span>
     · Click any circle in a row to toggle it. Click the row itself to open the record and log a visit.
   </div>
+
+  </div><!-- #app -->
 </div>
 
 <div id="modalRoot"></div>
@@ -496,6 +532,10 @@ const PROFILES = [
 const SUPABASE = {
   url: "https://jnjitexmntqjbsixmzaf.supabase.co",   // no trailing slash
   key: "sb_publishable_CETBwLJM4MaS4a1tfIr07g_3_fp3-yo",   // "Publishable key" (sb_publishable_…). Older projects call this the anon key.
+  // Your own user's UID (Authentication → Users). Anyone else who signs in gets
+  // a read-only view. Not a secret: the database enforces the same rule in its
+  // write policy — this only decides which controls the page bothers to show.
+  ownerId: "",
 };
 const CLOUD = Boolean(SUPABASE.url && SUPABASE.key);
 
@@ -694,8 +734,14 @@ let syncMsg = "";
 let pollTimer = null;
 
 const signedIn = () => Boolean(session?.access_token);
+/** Everyone who signs in can read; only the owner's account can write. The
+ *  database enforces this too — this is just so the UI doesn't offer a viewer
+ *  buttons the server would reject. */
+const isOwner = () => signedIn() && (!SUPABASE.ownerId || session.userId === SUPABASE.ownerId);
 /** Local-only mode has no notion of permission — everything stays editable. */
-const canEdit = () => !CLOUD || signedIn();
+const canEdit = () => !CLOUD || isOwner();
+/** Nothing renders at all until someone is signed in. */
+const locked = () => CLOUD && !signedIn();
 
 function loadSession() {
   if (!CLOUD) return null;
@@ -768,13 +814,22 @@ async function signIn(email, password) {
     refresh_token: data.refresh_token,
     expires_at: Date.now() + (data.expires_in || 3600) * 1000,
     email: data.user?.email || email,
+    userId: data.user?.id || "",
   });
 }
 
+/** Signing out wipes the cached list as well as the token. A viewer's borrowed
+ *  credentials must not leave the roster sitting in their browser afterwards. */
 function signOut() {
   storeSession(null);
+  prospects = [];
+  orderIds = [];
+  try { localStorage.removeItem(STORE_KEY); } catch {}
+  setDirty(false);
+  clearInterval(pollTimer);
   renderCloudBar();
-  render();                      // the table drops back to read-only
+  render();
+  applyGate();
 }
 
 /** Access tokens last an hour; swap in a new one before it lapses. */
@@ -794,10 +849,10 @@ async function ensureToken() {
       refresh_token: j.refresh_token,
       expires_at: Date.now() + (j.expires_in || 3600) * 1000,
       email: j.user?.email || session.email,
+      userId: j.user?.id || session.userId || "",
     });
   } catch {
-    storeSession(null);          // refresh failed: sign in again
-    renderCloudBar();
+    signOut();                   // refresh failed: back to the gate
   }
 }
 
@@ -909,86 +964,67 @@ function renderCloudBar(state = dirty ? "error" : "ok") {
       : problem
         ? `<span class="cdot bad"></span><span><b>Not synced.</b> Your changes are safe in this browser${
             syncMsg ? ` — the server said: ${esc(syncMsg)}` : ""}</span>`
-        : signedIn()
-          ? `<span class="cdot ok"></span><span>Synced · signed in as ${esc(session.email || "you")}</span>`
-          : `<span class="cdot ok"></span><span>Shared list · read only</span>`) +
+        : `<span class="cdot ok"></span><span>${
+            isOwner()
+              ? `Synced · signed in as ${esc(session.email || "you")}`
+              : `Viewing as ${esc(session?.email || "guest")} · read only`}</span>`) +
     `<span class="spacer"></span>` +
     (problem && canEdit() ? `<button id="btnSync">Sync now</button>` : "") +
-    (signedIn()
-      ? `<button class="ghost" id="btnSignOut">Sign out</button>`
-      : `<button id="btnSignIn">Sign in to edit</button>`);
+    (signedIn() ? `<button class="ghost" id="btnSignOut">Sign out</button>` : "");
 }
 
-/* ---------- sign-in dialog ---------- */
+/* ---------- the gate ---------- */
 
-function openSignIn() {
-  openModal(`
-    <header>
-      <div><h2>Sign in to edit</h2>
-        <div class="where">Everyone can read this list. Editing is yours alone.</div></div>
-      <button class="x" data-close aria-label="Close">&times;</button>
-    </header>
-    <div class="body">
-      <div class="field">
-        <label for="s-email">Email</label>
-        <input type="email" id="s-email" autocomplete="username" value="${esc(session?.email || "")}">
-      </div>
-      <div class="field">
-        <label for="s-pass">Password</label>
-        <input type="password" id="s-pass" autocomplete="current-password">
-        <div class="err" id="s-err" hidden></div>
-      </div>
-    </div>
-    <footer>
-      <div class="spacer"></div>
-      <button data-close>Cancel</button>
-      <button class="primary" data-go>Sign in</button>
-    </footer>
-  `, root => {
-    const email = root.querySelector("#s-email");
-    const pass = root.querySelector("#s-pass");
-    const err = root.querySelector("#s-err");
-    const btn = root.querySelector("[data-go]");
-    (email.value ? pass : email).focus();
+/** Swap the whole app for the sign-in card, or back. */
+function applyGate() {
+  const shut = locked();
+  $("#gate").hidden = !shut;
+  $("#app").hidden = shut;
+  if (shut) $("#g-email").focus();
+}
 
-    const go = async () => {
-      err.hidden = true;
-      btn.disabled = true;
-      btn.textContent = "Signing in…";
-      try {
-        await signIn(email.value.trim(), pass.value);
-        closeModal();
-        renderCloudBar();
-        render();                    // editing controls come back
-        if (dirty) await syncAll();  // push anything made while signed out
-        else await pullFromCloud();
-      } catch (e) {
-        err.textContent = e.message;
-        err.hidden = false;
-        btn.disabled = false;
-        btn.textContent = "Sign in";
-      }
-    };
+function wireGate() {
+  const email = $("#g-email"), pass = $("#g-pass"), err = $("#g-err"), btn = $("#g-go");
 
-    btn.addEventListener("click", go);
-    root.addEventListener("keydown", e => {
-      if (e.key === "Enter") { e.preventDefault(); go(); }
-    });
-  });
+  const go = async () => {
+    if (!email.value.trim() || !pass.value) {
+      err.textContent = "Enter both an email and a password.";
+      err.hidden = false;
+      return;
+    }
+    err.hidden = true;
+    btn.disabled = true;
+    btn.textContent = "Signing in…";
+    try {
+      await signIn(email.value.trim(), pass.value);
+      pass.value = "";
+      applyGate();
+      renderCloudBar();
+      await startCloud();
+    } catch (e) {
+      err.textContent = e.message;
+      err.hidden = false;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Sign in";
+    }
+  };
+
+  btn.addEventListener("click", go);
+  for (const el of [email, pass]) {
+    el.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); go(); } });
+  }
 }
 
 /* ---------- boot ---------- */
 
-async function initCloud() {
-  if (!CLOUD) { $("#cloudbar").hidden = true; return; }
-  renderCloudBar();
-
+/** Fetch, then keep fetching. Only ever runs for someone signed in. */
+async function startCloud() {
   if (dirty) {
     // local edits never made it up; do not let a refresh pull over them
     setSync("error", "changes from a previous session are still local");
   } else {
     try {
-      await ensureToken();
       await pullFromCloud({ initial: true });
       setSync("ok");
     } catch (e) {
@@ -998,11 +1034,21 @@ async function initCloud() {
 
   clearInterval(pollTimer);
   pollTimer = setInterval(async () => {
+    if (locked()) return;                   // signed out mid-session
     if (document.hidden) return;            // don't poll a background tab
     if (modalRoot.firstChild) return;       // nor pull data out from under an open form
     if (dirty) return;                      // nor overwrite unsynced local work
     try { await pullFromCloud(); } catch { /* transient; the next tick retries */ }
   }, 15000);
+}
+
+async function initCloud() {
+  if (!CLOUD) { $("#cloudbar").hidden = true; $("#gate").hidden = true; return; }
+  wireGate();
+  await ensureToken();          // a stored session may need refreshing first
+  applyGate();
+  renderCloudBar();
+  if (!locked()) await startCloud();
 }
 
 /* ------------------------------------------------------------------ *
@@ -2032,14 +2078,13 @@ $("#pager").addEventListener("change", e => {
 });
 
 $("#cloudbar").addEventListener("click", e => {
-  if (e.target.closest("#btnSignIn")) openSignIn();
-  else if (e.target.closest("#btnSignOut")) signOut();
+  if (e.target.closest("#btnSignOut")) signOut();
   else if (e.target.closest("#btnSync")) syncAll();
 });
 
 // A tab left open for hours has a stale list; catch up when it comes back.
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && CLOUD && !dirty && !modalRoot.firstChild) {
+  if (!document.hidden && CLOUD && !locked() && !dirty && !modalRoot.firstChild) {
     pullFromCloud().catch(() => {});
   }
 });
@@ -2050,9 +2095,12 @@ $("#legend").innerHTML = PROFILES
   .map(d => `<b>${d.letter}</b>&nbsp;${esc(d.label)}`)
   .join(" &nbsp;·&nbsp; ");
 
+// A locked page must not flash the cached list before the gate goes up.
+if (locked()) { prospects = []; $("#app").hidden = true; }
+
 reorder();
 render();          // paint the cached copy immediately…
-initCloud();       // …then reconcile with the server
+initCloud();       // …then gate, and reconcile with the server
 
 </script>
 </body>
