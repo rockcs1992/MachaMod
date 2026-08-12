@@ -540,7 +540,7 @@ const SUPABASE = {
   // Your own user's UID (Authentication → Users). Anyone else who signs in gets
   // a read-only view. Not a secret: the database enforces the same rule in its
   // write policy — this only decides which controls the page bothers to show.
-  ownerId: "",
+  ownerId: "f2fee06b-6c3f-4303-bc3e-6768f39331b9",
 };
 const CLOUD = Boolean(SUPABASE.url && SUPABASE.key);
 
@@ -741,8 +741,12 @@ let pollTimer = null;
 const signedIn = () => Boolean(session?.access_token);
 /** Everyone who signs in can read; only the owner's account can write. The
  *  database enforces this too — this is just so the UI doesn't offer a viewer
- *  buttons the server would reject. */
-const isOwner = () => signedIn() && (!SUPABASE.ownerId || session.userId === SUPABASE.ownerId);
+ *  buttons the server would reject.
+ *  Fails closed: an unconfigured ownerId means nobody gets edit controls, which
+ *  is a visible, self-correcting mistake. The reverse — handing everyone the
+ *  editing UI — looks like it works right up until the server refuses a save. */
+const isOwner = () =>
+  signedIn() && Boolean(SUPABASE.ownerId) && session.userId === SUPABASE.ownerId;
 /** Local-only mode has no notion of permission — everything stays editable. */
 const canEdit = () => !CLOUD || isOwner();
 /** Nothing renders at all until someone is signed in. */
@@ -752,7 +756,9 @@ function loadSession() {
   if (!CLOUD) return null;
   try {
     const s = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
-    return s && s.access_token ? s : null;
+    // A session saved before userId was recorded can't be told owner from
+    // viewer. Discard it rather than guess — costs one sign-in, once.
+    return s && s.access_token && s.userId ? s : null;
   } catch {
     return null;
   }
