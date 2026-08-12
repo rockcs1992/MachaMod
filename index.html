@@ -121,6 +121,23 @@
     padding: 11px 12px; background: var(--surface-2);
     border-bottom: 1px solid var(--border); white-space: nowrap;
   }
+  /* Sortable headers: a full-bleed button that inherits the header's own look,
+     so the column reads as a header rather than as a row of controls. */
+  thead th.sortable { padding: 0; }
+  th.sortable button {
+    display: flex; align-items: center; gap: 6px;
+    width: 100%; padding: 11px 12px;
+    font: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: .07em;
+    font-weight: 700; color: var(--text-dim);
+    background: transparent; border: none; border-radius: 0; text-align: left;
+  }
+  th.sortable.right button { justify-content: flex-end; }
+  th.sortable button:hover { background: var(--border); color: var(--text); }
+  th.sortable .arr { font-size: 9px; opacity: 0; transition: opacity .12s; }
+  th.sortable button:hover .arr { opacity: .5; }
+  th.sortable.sorted button { color: var(--text); }
+  th.sortable.sorted .arr { opacity: 1; color: var(--gold); }
+
   tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr { cursor: pointer; }
@@ -456,9 +473,10 @@
   <div class="toolbar">
     <div class="grow"><input type="search" id="search" placeholder="Search name, location, characters, notes…" autocomplete="off"></div>
     <select id="sort" style="width:auto">
-      <option value="score">Sort: Score (high → low)</option>
-      <option value="name">Sort: Name (A → Z)</option>
-      <option value="approached">Sort: Follow up next (never / oldest)</option>
+      <option value="score">Sort: Score</option>
+      <option value="name">Sort: Name</option>
+      <option value="location">Sort: Location</option>
+      <option value="approached">Sort: Last approached</option>
       <option value="updated">Sort: Last updated</option>
       <option value="added">Sort: Date added</option>
     </select>
@@ -478,11 +496,14 @@
         <thead>
           <tr>
             <th class="col-n">#</th>
-            <th>Name</th>
-            <th>Location</th>
+            <th class="sortable" data-sort="name" aria-sort="none">
+              <button type="button">Name<span class="arr" aria-hidden="true"></span></button></th>
+            <th class="sortable" data-sort="location" aria-sort="none">
+              <button type="button">Location<span class="arr" aria-hidden="true"></span></button></th>
             <th>8 Profiles &nbsp;<span style="font-weight:400;text-transform:none;letter-spacing:0">(M A C H O M O D)</span></th>
             <th>3 Good Characters &amp; Notes</th>
-            <th style="text-align:right">Last Approach</th>
+            <th class="sortable right" data-sort="approached" aria-sort="none">
+              <button type="button">Last Approach<span class="arr" aria-hidden="true"></span></button></th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -718,7 +739,7 @@ function loadPrefs() {
 
 function savePrefs() {
   try {
-    localStorage.setItem(PREF_KEY, JSON.stringify({ pageSize, sortBy }));
+    localStorage.setItem(PREF_KEY, JSON.stringify({ pageSize, sort: sortBy, dir: sortDir }));
   } catch { /* a full or blocked storage must not break the view */ }
 }
 
@@ -1119,11 +1140,27 @@ function chipsHTML(pr) {
 
 const tbody = $("#tbody");
 const PAGE_SIZES = [10, 25, 50, 100, 0];   // 0 = show every row on one page
-const SORTS = ["score", "name", "approached", "updated", "added"];
+
+const byName = (a, b) => a.name.localeCompare(b.name);
+const approachedAt = pr => lastApproach(pr)?.at || "";   // "" — never — sorts before any date
+
+/** One comparator per sortable column, each written ascending. `dir` is the
+ *  direction a fresh click on that column starts from: the one people expect
+ *  first, which for dates and scores is newest/highest. */
+const SORT_DEFS = {
+  score:      { dir: "desc", cmp: (a, b) => score(a) - score(b) },
+  name:       { dir: "asc",  cmp: byName },
+  location:   { dir: "asc",  cmp: (a, b) => a.location.localeCompare(b.location) },
+  approached: { dir: "asc",  cmp: (a, b) => approachedAt(a).localeCompare(approachedAt(b)) },
+  updated:    { dir: "desc", cmp: (a, b) => a.lastUpdated.localeCompare(b.lastUpdated) },
+  added:      { dir: "desc", cmp: (a, b) => a.createdAt.localeCompare(b.createdAt) },
+};
+const SORTS = Object.keys(SORT_DEFS);
 
 const prefs = loadPrefs();
 let query = "";
 let sortBy = SORTS.includes(prefs.sort) ? prefs.sort : "score";
+let sortDir = prefs.dir === "asc" || prefs.dir === "desc" ? prefs.dir : SORT_DEFS[sortBy].dir;
 let pageSize = PAGE_SIZES.includes(prefs.pageSize) ? prefs.pageSize : 25;
 let page = 1;
 
@@ -1139,20 +1176,51 @@ let orderIds = [];
 let orderStale = false;
 
 function sortedIds() {
-  const byName = (a, b) => a.name.localeCompare(b.name);
-  return [...prospects].sort((a, b) => {
-    switch (sortBy) {
-      case "name":    return byName(a, b);
-      case "updated": return b.lastUpdated.localeCompare(a.lastUpdated);
-      case "added":   return b.createdAt.localeCompare(a.createdAt);
-      // never-approached first (empty string sorts before any date), then longest-neglected
-      case "approached": {
-        const av = lastApproach(a)?.at || "", bv = lastApproach(b)?.at || "";
-        return av.localeCompare(bv) || byName(a, b);
-      }
-      default:        return score(b) - score(a) || byName(a, b);
-    }
-  }).map(p => p.id);
+  const def = SORT_DEFS[sortBy] || SORT_DEFS.score;
+  const flip = sortDir === "desc" ? -1 : 1;
+  // Name breaks every tie, always ascending, so equal rows keep a stable order
+  // whichever way the column itself is pointing.
+  return [...prospects]
+    .sort((a, b) => def.cmp(a, b) * flip || byName(a, b))
+    .map(p => p.id);
+}
+
+/** Point a column at a new sort, or flip it if it is already the active one. */
+function setSort(key, { toggle = true } = {}) {
+  if (!SORT_DEFS[key]) return;
+  if (toggle && sortBy === key) sortDir = sortDir === "asc" ? "desc" : "asc";
+  else { sortBy = key; sortDir = SORT_DEFS[key].dir; }
+  page = 1;
+  savePrefs();
+  syncSortControls();
+  reorder();
+  render();
+}
+
+const SORT_HINT = {
+  score:      ["fewest qualified profiles first", "most qualified profiles first"],
+  name:       ["A → Z", "Z → A"],
+  location:   ["A → Z", "Z → A"],
+  approached: ["never approached first, then longest since a visit", "most recently approached first"],
+  updated:    ["oldest edit first", "most recently edited first"],
+  added:      ["oldest first", "newest first"],
+};
+
+/** Keep the arrows, the aria-sort state and the dropdown agreeing with each other. */
+function syncSortControls() {
+  for (const th of document.querySelectorAll("th.sortable")) {
+    const key = th.dataset.sort;
+    const active = key === sortBy;
+    const dir = active ? sortDir : SORT_DEFS[key].dir;
+    th.setAttribute("aria-sort", active ? (sortDir === "asc" ? "ascending" : "descending") : "none");
+    th.classList.toggle("sorted", active);
+    th.querySelector(".arr").textContent = active ? (sortDir === "asc" ? "▲" : "▼") : "↕";
+    th.querySelector("button").title = active
+      ? `Sorted by ${SORT_HINT[key][sortDir === "asc" ? 0 : 1]} — click to reverse`
+      : `Sort by ${SORT_HINT[key][dir === "asc" ? 0 : 1]}`;
+  }
+  const sel = $("#sort");
+  if (sel) sel.value = sortBy;
 }
 
 /** Re-apply the sort and drop the "out of order" flag. */
@@ -2052,8 +2120,15 @@ $("#fileInput").addEventListener("change", e => {
 });
 // Filtering only ever narrows, so a page deep in the old list would look empty.
 $("#search").addEventListener("input", e => { query = e.target.value; page = 1; render(); });
-$("#sort").addEventListener("change", e => { sortBy = e.target.value; page = 1; savePrefs(); reorder(); render(); });
+// The dropdown picks a column; it never flips one, so a repeat choice is a no-op.
+$("#sort").addEventListener("change", e => setSort(e.target.value, { toggle: false }));
 $("#btnResort").addEventListener("click", () => { page = 1; reorder(); render(); });
+
+// Clicking a column header sorts by it; clicking the active one reverses it.
+$("thead").addEventListener("click", e => {
+  const th = e.target.closest("th.sortable");
+  if (th) setSort(th.dataset.sort);
+});
 
 $("#tagbar").addEventListener("click", e => {
   if (e.target.closest("#btnClearTags")) { tagFilter.clear(); page = 1; render(); return; }
@@ -2100,7 +2175,7 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-$("#sort").value = sortBy;
+syncSortControls();
 
 $("#legend").innerHTML = PROFILES
   .map(d => `<b>${d.letter}</b>&nbsp;${esc(d.label)}`)
